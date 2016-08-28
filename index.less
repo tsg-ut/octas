@@ -1,0 +1,57 @@
+html, body, .container {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+.container {
+	position: relative;
+}
+.board-end() {
+	height: 50%;
+}
+.board-end-a {
+	.board-end;
+	background: #ffdddd;
+}
+.board-end-b {
+	.board-end;
+	background: #ddddff;
+}
+svg#board{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	.board-edge {
+		stroke: #009900;
+		fill: #ffffff;
+		stroke-width: 6;
+	}
+	.board-point {
+		fill: #006600;
+		stroke: none;
+	}
+	.board-goal() {
+		stroke-width: 2;
+	}
+	.board-goal-a {
+		fill: #ff6666;
+		stroke: #ff0000;
+		.board-goal;
+	}
+	.board-goal-b {
+		fill: #6666ff;
+		stroke: #0000ff;
+		.board-goal;
+	}
+	.current-point {
+		fill: #ee77ee;
+	}
+	.trace-line {
+		fill: none;
+		stroke: #000000;
+		stroke-width: 1.5;
+	}
+}
