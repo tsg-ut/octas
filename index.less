@@ -9,25 +9,11 @@ html, body, .container {
 }
 .board-end {
 	height: 50%;
-}
-.board-end-a {
-	background-color: #ffdddd;
-	@keyframes board-end-animation-a {
-		from { background-color: #ffdddd; }
-		to   { background-color: #ff6666; }
+	&.player-a {
+		background-color: #ffdddd;
 	}
-	&.active {
-		animation: 3s linear 0s infinite alternate board-end-animation-a;
-	}
-}
-.board-end-b {
-	background-color: #ddddff;
-	@keyframes board-end-animation-b {
-		from { background-color: #ddddff; }
-		to   { background-color: #6666ff; }
-	}
-	&.active {
-		animation: 3s linear 0s infinite alternate board-end-animation-b;
+	&.player-b {
+		background-color: #ddddff;
 	}
 }
 svg#board{
@@ -45,18 +31,20 @@ svg#board{
 		fill: #006600;
 		stroke: none;
 	}
-	.board-goal() {
+	.board-goal {
 		stroke-width: 2;
-	}
-	.board-goal-a {
-		fill: #ff6666;
-		stroke: #ff0000;
-		.board-goal;
-	}
-	.board-goal-b {
-		fill: #6666ff;
-		stroke: #0000ff;
-		.board-goal;
+		&.player-a {
+			stroke: #ff0000;
+			&:not(.active-player) {
+				fill: #ff6666;
+			}
+		}
+		&.player-b {
+			stroke: #0000ff;
+			&:not(.active-player) {
+				fill: #6666ff;
+			}
+		}
 	}
 	.current-point {
 		fill: #ee77ee;
@@ -72,4 +60,18 @@ svg#board{
 		stroke-width: 1;
 		cursor: pointer;
 	}
+}
+@keyframes active-animation-a {
+	from { background-color: #ffdddd; fill: #ffdddd; }
+	to   { background-color: #ff6666; fill: #ff6666; }
+}
+@keyframes active-animation-b {
+	from { background-color: #ddddff; fill: #ddddff; }
+	to   { background-color: #6666ff; fill: #6666ff; }
+}
+.player-a.active-player {
+	animation: 3s linear 0s infinite alternate active-animation-a;
+}
+.player-b.active-player {
+	animation: 3s linear 0s infinite alternate active-animation-b;
 }

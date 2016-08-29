@@ -4,7 +4,7 @@
   "description": "一筆書きゲーム",
   "main": "index.js",
   "scripts": {
-    "browserify": "browserify lib/index.js --debug --transform [ babelify --presets [ es2015 ] ] > index.js",
+    "browserify": "browserify lib/index.js --debug --transform [ babelify --presets [ es2015 ] ] | exorcist index.js.map > index.js",
     "pug": "pug index.pug",
     "less": "lessc index.less index.css",
     "build": "concurrently \"npm run browserify\" \"npm run pug\" \"npm run less\"",
