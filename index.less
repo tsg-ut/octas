@@ -7,16 +7,28 @@ html, body, .container {
 .container {
 	position: relative;
 }
-.board-end() {
+.board-end {
 	height: 50%;
 }
 .board-end-a {
-	.board-end;
-	background: #ffdddd;
+	background-color: #ffdddd;
+	@keyframes board-end-animation-a {
+		from { background-color: #ffdddd; }
+		to   { background-color: #ff6666; }
+	}
+	&.active {
+		animation: 3s linear 0s infinite alternate board-end-animation-a;
+	}
 }
 .board-end-b {
-	.board-end;
-	background: #ddddff;
+	background-color: #ddddff;
+	@keyframes board-end-animation-b {
+		from { background-color: #ddddff; }
+		to   { background-color: #6666ff; }
+	}
+	&.active {
+		animation: 3s linear 0s infinite alternate board-end-animation-b;
+	}
 }
 svg#board{
 	position: absolute;
