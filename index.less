@@ -48,6 +48,7 @@ svg#board{
 	}
 	.current-point {
 		fill: #ee77ee;
+		cursor: grab;
 	}
 	.trace-line {
 		fill: none;
@@ -79,6 +80,9 @@ svg#board{
 				opacity: 1;
 				stroke: #adb300;
 			}
+		}
+		.current-point {
+			cursor: grabbing;
 		}
 	}
 }
