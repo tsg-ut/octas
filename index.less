@@ -60,6 +60,17 @@ svg#board{
 		stroke-width: 1;
 		cursor: pointer;
 	}
+	@keyframes triangle-fadeout {
+		from { opacity: 0.8; }
+		to   { opacity: 0;   }
+	}
+	.triangle {
+		fill: #00ff00;
+		stroke: #006600;
+		stroke-width: 1;
+		animation: 1s linear 0s 1 both triangle-fadeout;
+		pointer-events: none;
+	}
 }
 @keyframes active-animation-a {
 	from { background-color: #ffdddd; fill: #ffdddd; }
