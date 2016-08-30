@@ -71,6 +71,16 @@ svg#board{
 		animation: 1s linear 0s 1 both triangle-fadeout;
 		pointer-events: none;
 	}
+	&.dragging {
+		.arrow {
+			pointer-events: none;
+			opacity: 0.4;
+			&.selected {
+				opacity: 1;
+				stroke: #adb300;
+			}
+		}
+	}
 }
 @keyframes active-animation-a {
 	from { background-color: #ffdddd; fill: #ffdddd; }
