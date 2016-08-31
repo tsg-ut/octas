@@ -7,13 +7,27 @@ html, body, .container {
 .container {
 	position: relative;
 }
+@keyframes active-animation-a {
+	from { background-color: #ff6666; fill: #ff3333; }
+	to   { background-color: #ffdddd; fill: #ffaaaa; }
+}
+@keyframes active-animation-b {
+	from { background-color: #6666ff; fill: #3333ff; }
+	to   { background-color: #ddddff; fill: #aaaaff; }
+}
 .board-end {
 	height: 50%;
 	&.player-a {
-		background-color: #ffdddd;
+		background-color: #ffeeee;
+		.active-a & {
+			animation: 3s linear 0s infinite alternate active-animation-a;
+		}
 	}
 	&.player-b {
-		background-color: #ddddff;
+		background-color: #eeeeff;
+		.active-b & {
+			animation: 3s linear 0s infinite alternate active-animation-b;
+		}
 	}
 }
 svg#board{
@@ -35,14 +49,16 @@ svg#board{
 		stroke-width: 2;
 		&.player-a {
 			stroke: #ff0000;
-			&:not(.active-player) {
-				fill: #ff6666;
+			fill: #ff6666;
+			.active-a & {
+				animation: 3s linear 0s infinite alternate active-animation-a;
 			}
 		}
 		&.player-b {
 			stroke: #0000ff;
-			&:not(.active-player) {
-				fill: #6666ff;
+			fill: #6666ff;
+			.active-b & {
+				animation: 3s linear 0s infinite alternate active-animation-b;
 			}
 		}
 	}
@@ -56,10 +72,34 @@ svg#board{
 		stroke-width: 1.5;
 	}
 	.arrow {
-		fill: #eaf300;
-		stroke: #c9d100;
 		stroke-width: 1;
 		cursor: pointer;
+		.active-a & {
+			fill: #ff4444;
+			stroke: #d10000;
+		}
+		.active-b & {
+			fill: #4444ff;
+			stroke: #0000d1;
+		}
+	}
+	&.dragging {
+		.arrow {
+			pointer-events: none;
+			opacity: 0.4;
+			&.selected {
+				opacity: 1;
+				.active-a & {
+					stroke: #b30000;
+				}
+				.active-b & {
+					stroke: #0000b3;
+				}
+			}
+		}
+		.current-point {
+			cursor: grabbing;
+		}
 	}
 	@keyframes triangle-fadeout {
 		from { opacity: 0.8; }
@@ -72,31 +112,4 @@ svg#board{
 		animation: 1s linear 0s 1 both triangle-fadeout;
 		pointer-events: none;
 	}
-	&.dragging {
-		.arrow {
-			pointer-events: none;
-			opacity: 0.4;
-			&.selected {
-				opacity: 1;
-				stroke: #adb300;
-			}
-		}
-		.current-point {
-			cursor: grabbing;
-		}
-	}
-}
-@keyframes active-animation-a {
-	from { background-color: #ffdddd; fill: #ffdddd; }
-	to   { background-color: #ff6666; fill: #ff6666; }
-}
-@keyframes active-animation-b {
-	from { background-color: #ddddff; fill: #ddddff; }
-	to   { background-color: #6666ff; fill: #6666ff; }
-}
-.player-a.active-player {
-	animation: 3s linear 0s infinite alternate active-animation-a;
-}
-.player-b.active-player {
-	animation: 3s linear 0s infinite alternate active-animation-b;
 }
