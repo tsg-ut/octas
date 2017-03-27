@@ -8,7 +8,8 @@
     "pug": "pug index.pug",
     "less": "lessc index.less | postcss --use autoprefixer -o index.css",
     "build": "concurrently \"npm run browserify\" \"npm run pug\" \"npm run less\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint \"lib/**/*.js\"",
+    "test": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -22,10 +23,12 @@
   "homepage": "https://github.com/kurgm/octas#readme",
   "devDependencies": {
     "autoprefixer": "^6.4.0",
+    "babel-eslint": "^7.2.1",
     "babel-preset-es2015": "^6.14.0",
     "babelify": "^7.3.0",
     "browserify": "^13.1.0",
     "concurrently": "^2.2.0",
+    "eslint": "^3.18.0",
     "exorcist": "^0.4.0",
     "jquery": "^3.1.0",
     "less": "^2.7.1",
