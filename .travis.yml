@@ -7,6 +7,9 @@ script:
   - npm run build
   - npm test
 
+after_script:
+  - bash bin/after_script.sh
+
 deploy:
   provider: pages
   skip_cleanup: true
