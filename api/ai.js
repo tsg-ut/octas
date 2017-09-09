@@ -1,5 +1,5 @@
 const dx = [0, 1, 1, 1, 0, -1, -1, -1];
-const dy = [1, 1, 0, -1, -1, -1, 0, 1];
+const dy = [-1, -1, 0, 1, 1, 1, 0, -1];
 const goalX = 5;
 const goalY = 0;
 
@@ -69,14 +69,14 @@ const aiLogic = function(vertexHistory) {
 	const edge = new Array(11);
 	for (let i = 0; i < 11; i++) {
 		edge[i] = new Array(11);
-		for (let j = 0; j < 8; j++) {
+		for (let j = 0; j < 11; j++) {
 			edge[i][j] = new Array(8).fill(false);
 		}
 	}
 	for (let i = 1; i < arrayLength; i++) {
 		const [preX, preY] = vertexHistory[i - 1];
 		const [nowX, nowY] = vertexHistory[i];
-		for (let j = 1; j < 8; j++) {
+		for (let j = 0; j < 8; j++) {
 			if (preX + dx[j] === nowX && preY + dy[j] === nowY) {
 				edge[preX][preY][j] = true;
 				edge[nowX][nowY][(j + 4) % 8] = true;
