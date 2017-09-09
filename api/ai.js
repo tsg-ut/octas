@@ -2,9 +2,11 @@ const dx = [0, 1, 1, 1, 0, -1, -1, -1];
 const dy = [-1, -1, 0, 1, 1, 1, 0, -1];
 const goalX = 5;
 const goalY = 0;
+const myGoalX = 5;
+const myGoalY = 10;
 
 const distanceToGoal = function(X, Y) {
-	return Math.abs(goalX - X) + Math.abs(goalY - Y);
+	return Math.abs(goalX - X) + Math.abs(goalY - Y) - Math.abs(myGoalX - X) - Math.abs(myGoalY - Y);
 };
 
 const whereToMove = function(edge, nowX, nowY, nowDirection) {
@@ -26,7 +28,9 @@ const whereToMove = function(edge, nowX, nowY, nowDirection) {
 		return [-1, -1];
 	}
 	if (newX === 0) {
-		if (nowY + dy[nowDirection] * 2 === 0) {
+		if (nowDirection === 6) {
+			return [-1, -1];
+		} else if (nowY + dy[nowDirection] * 2 === 0) {
 			return [2, 1];
 		} else if (nowY + dy[nowDirection] * 2 === 10) {
 			return [2, 9];
@@ -34,7 +38,9 @@ const whereToMove = function(edge, nowX, nowY, nowDirection) {
 		return [nowX, nowY + dy[nowDirection] * 2];
 	}
 	if (newX === 10) {
-		if (nowY + dy[nowDirection] * 2 === 0) {
+		if (nowDirection === 2) {
+			return [-1, -1];
+		} else if (nowY + dy[nowDirection] * 2 === 0) {
 			return [8, 1];
 		} else if (nowY + dy[nowDirection] * 2 === 10) {
 			return [8, 9];
@@ -42,7 +48,9 @@ const whereToMove = function(edge, nowX, nowY, nowDirection) {
 		return [nowX, nowY + dy[nowDirection] * 2];
 	}
 	if (newY === 0) {
-		if (nowX + dx[nowDirection] * 2 === 0) {
+		if (nowDirection === 0) {
+			return [-1, -1];
+		} else if (nowX + dx[nowDirection] * 2 === 0) {
 			return [1, 2];
 		} else if (nowX + dx[nowDirection] * 2 === 10) {
 			return [9, 2];
@@ -50,7 +58,9 @@ const whereToMove = function(edge, nowX, nowY, nowDirection) {
 		return [nowX + dx[nowDirection] * 2, nowY];
 	}
 	if (newY === 10) {
-		if (nowX + dx[nowDirection] * 2 === 0) {
+		if (nowDirection === 4) {
+			return [-1, -1];
+		} else if (nowX + dx[nowDirection] * 2 === 0) {
 			return [1, 8];
 		} else if (nowX + dx[nowDirection] * 2 === 10) {
 			return [9, 8];
