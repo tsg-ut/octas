@@ -140,4 +140,4 @@ const detectTriangle = function(edge, nowX, nowY, nowDirection) {
 };
 */
 
-module.export = aiLogic;
+module.exports = aiLogic;
