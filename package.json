@@ -35,5 +35,8 @@
     "postcss-cli": "^4.0.0",
     "pug-cli": "^1.0.0-alpha6",
     "snapsvg": "^0.5.1"
+  },
+  "dependencies": {
+    "socket.io": "^2.0.3"
   }
 }
