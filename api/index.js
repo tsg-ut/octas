@@ -50,7 +50,7 @@ const move = (direction, player) => {
 		const point = board.getCurrentPoint();
 		if (point !== null && point.movableDirections.size !== 0) {
 			setTimeout(() => {
-				const aiDirection = ai(board.trace);
+				const aiDirection = ai(board.trace.reduce((prev, curr) => prev.concat(curr), []));
 				if (aiDirection === -1) {
 					throw new Error('no available move!?!!?');
 				}
