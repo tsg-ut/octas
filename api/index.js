@@ -1,4 +1,4 @@
-const io = require('socket-io')();
+const io = require('socket.io')();
 
 const Board = require('../lib/Board');
 const ai = require('./ai');
