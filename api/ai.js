@@ -165,14 +165,7 @@ const vertexToEdge = function(vertexHistory) {
 };
 
 const distanceToGoal = function(edge, X, Y) {
-	let end = true;
-	for (let i = 0; i < 8; i++) {
-		const [toX, toY] = whereToMove(edge, X, Y, i);
-		if (toX !== -1 && toY !== -1) {
-			end = false;
-		}
-	}
-	if (end === true) {
+	if (canNotMove(edge, X, Y) === true) {
 		return INF;
 	}
 	return Y * 20 + Math.abs(X - 5) * (Y < 4 ? 1 : -1) + Math.floor(Math.random() * 4) - 2;
@@ -185,14 +178,13 @@ const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
 	let ret = INF;
 	let retIndex = -1;
 	if (depth === searchDepth) {
-		ret = -INF;
 		for (let i = 0; i < 8; i++) {
 			const [toX, toY] = whereToMove(edge, nowX, nowY, i);
 			if (toX === -1) {
 				continue;
 			}
 			const tmpVal = distanceToGoal(edge, toX, toY);
-			if (ret < tmpVal) {
+			if (ret > tmpVal) {
 				ret = tmpVal;
 			}
 		}
