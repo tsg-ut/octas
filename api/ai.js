@@ -34,25 +34,13 @@ const detectTriangle = function(edge, nowX, nowY, nowDirection) {
 };
 
 const updateEdge = function(edge, nowX, nowY, nowDirection) {
-
-	const retEdge = new Array(11);
-	for (let i = 0; i < 11; i++) {
-		retEdge[i] = new Array(11);
-		for (let j = 0; j < 11; j++) {
-			retEdge[i][j] = new Array(8).fill(false);
-		}
-	}
-	for (let i = 0; i < 11; i++) {
-		for (let j = 0; j < 11; j++) {
-			for (let k = 0; k < 8; k++) {
-				retEdge[i][j][k] = edge[i][j][k];
-			}
-		}
-	}
+	let ret = [];
 	let newX = nowX + dx[nowDirection];
 	let newY = nowY + dy[nowDirection];
-	retEdge[nowX][nowY][nowDirection] = true;
-	retEdge[newX][newY][(nowDirection + 4) % 8] = true;
+	ret.push([nowX, nowY, nowDirection]);
+	ret.push([newX, newY, (nowDirection + 4) % 8]);
+	edge[nowX][nowY][nowDirection] = true;
+	edge[newX][newY][(nowDirection + 4) % 8] = true;
 
 	let nowDX = dx[nowDirection];
 	let nowDY = dy[nowDirection];
@@ -69,15 +57,17 @@ const updateEdge = function(edge, nowX, nowY, nowDirection) {
 		newY = preY + nowDY;
 		for (let i = 0; i < 8; i++) {
 			if (dx[i] === nowDX && dy[i] === nowDY) {
-				retEdge[preX][preY][i] = true;
-				retEdge[newX][newY][(i + 4) % 8] = true;
+				ret.push([preX, preY, i]);
+				ret.push([newX, newY, (i + 4) % 8]);
+				edge[preX][preY][i] = true;
+				edge[newX][newY][(i + 4) % 8] = true;
 				break;
 			}
 		}
 		preX = newX;
 		preY = newY;
 	}
-	return retEdge;
+	return ret;
 };
 
 const whereToMove = function(edge, nowX, nowY, nowDirection) {
@@ -215,21 +205,24 @@ const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
 			}
 			continue;
 		}
-		const newEdge = updateEdge(edge, nowX, nowY, i);
-		if (detectTriangle(newEdge, nowX, nowY, i) === true) {
-			if (canNotMove(newEdge, toX, toY) === false) {
-				const tmpVal = depthSearch(depth, newEdge, toX, toY, false);
+		const repair = updateEdge(edge, nowX, nowY, i);
+		if (detectTriangle(edge, nowX, nowY, i) === true) {
+			if (canNotMove(edge, toX, toY) === false) {
+				const tmpVal = depthSearch(depth, edge, toX, toY, false);
 				if (ret > tmpVal) {
 					ret = tmpVal;
 					retIndex = i;
 				}
 			}
-		} else if (canNotMove(newEdge, toX, toY) === false) {
-			const tmpVal = depthSearch(depth + 1, newEdge, toX, toY, true) * -1;
+		} else if (canNotMove(edge, toX, toY) === false) {
+			const tmpVal = depthSearch(depth + 1, edge, toX, toY, true) * -1;
 			if (ret > tmpVal) {
 				ret = tmpVal;
 				retIndex = i;
 			}
+		}
+		for (let j = 0; j < repair.length; j++) {
+			edge[repair[j][0]][repair[j][1]][repair[j][2]] = false;
 		}
 	}
 	if (depth === 0 && firstTime === true) {
