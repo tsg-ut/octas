@@ -3,7 +3,7 @@ const dy = [-1, -1, 0, 1, 1, 1, 0, -1];
 const INF = 1000000;
 
 const distanceToGoal = function(X, Y) {
-	return Y * 20 + Math.abs(X - 5) * (Y < 4 ? 1 : -1);
+	return Y * 20 + Math.abs(X - 5) * (Y < 4 ? 1 : -1) + Math.floor(Math.random() * 4) - 2;
 };
 
 const detectTriangle = function(edge, nowX, nowY, nowDirection) {
