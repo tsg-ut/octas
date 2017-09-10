@@ -11,7 +11,7 @@ const detectTriangle = function(edge, nowX, nowY, nowDirection) {
 		if (i === nowDirection) {
 			continue;
 		}
-		if (nowDirection !== (i + 1) % 8 && nowDirection !== (i + 2) % 8 && nowDirection !== (i - 1) % 8 && nowDirection !== (i - 2) % 8) {
+		if (nowDirection !== (i + 1) % 8 && nowDirection !== (i + 2) % 8 && nowDirection !== (i - 1 + 8) % 8 && nowDirection !== (i - 2 + 8) % 8) {
 			continue;
 		}
 		if (edge[nowX][nowY][i] === false) {
@@ -23,7 +23,7 @@ const detectTriangle = function(edge, nowX, nowY, nowDirection) {
 			continue;
 		}
 		for (let j = 0; j < 8; j++) {
-			if (newX + dx[j] === nowX && newY + dy[j] === nowY) {
+			if (newX + dx[j] === nowX + dx[nowDirection] && newY + dy[j] === nowY + dy[nowDirection]) {
 				if (edge[newX][newY][j] === true) {
 					return true;
 				}
@@ -34,10 +34,25 @@ const detectTriangle = function(edge, nowX, nowY, nowDirection) {
 };
 
 const updateEdge = function(edge, nowX, nowY, nowDirection) {
+
+	const retEdge = new Array(11);
+	for (let i = 0; i < 11; i++) {
+		retEdge[i] = new Array(11);
+		for (let j = 0; j < 11; j++) {
+			retEdge[i][j] = new Array(8).fill(false);
+		}
+	}
+	for (let i = 0; i < 11; i++) {
+		for (let j = 0; j < 11; j++) {
+			for (let k = 0; k < 8; k++) {
+				retEdge[i][j][k] = edge[i][j][k];
+			}
+		}
+	}
 	let newX = nowX + dx[nowDirection];
 	let newY = nowY + dy[nowDirection];
-	edge[nowX][nowY][nowDirection] = true;
-	edge[newX][newY][(nowDirection + 4) % 8] = true;
+	retEdge[nowX][nowY][nowDirection] = true;
+	retEdge[newX][newY][(nowDirection + 4) % 8] = true;
 
 	let nowDX = dx[nowDirection];
 	let nowDY = dy[nowDirection];
@@ -54,15 +69,15 @@ const updateEdge = function(edge, nowX, nowY, nowDirection) {
 		newY = preY + nowDY;
 		for (let i = 0; i < 8; i++) {
 			if (dx[i] === nowDX && dy[i] === nowDY) {
-				edge[preX][preY][i] = true;
-				edge[newX][newY][(i + 4) % 8] = true;
+				retEdge[preX][preY][i] = true;
+				retEdge[newX][newY][(i + 4) % 8] = true;
 				break;
 			}
 		}
 		preX = newX;
 		preY = newY;
 	}
-	return edge;
+	return retEdge;
 };
 
 const whereToMove = function(edge, nowX, nowY, nowDirection) {
@@ -170,7 +185,7 @@ const aiLogic = function(vertexHistory) {
 	const moveQueue = [[], []];
 	moveQueue[0].push([edge, nowX, nowY, 0, 0]);
 
-	for (let depth = 0; depth < 10; depth++) {
+	for (let depth = 0; depth < 4; depth++) {
 		const me = depth % 2;
 		const op = (depth % 2) ^ 1;
 		moveQueue[op] = [];
@@ -186,14 +201,21 @@ const aiLogic = function(vertexHistory) {
 					continue;
 				}
 				if (toY === 0 || toY === 10) {
-					moveQueue[op].push([edge, toX, toY, j, -1 * INF]);
+					moveQueue[op].push([edge, toX, toY, nowState[3], -1 * INF]);
+					continue;
 				}
 				const newEdge = updateEdge(nowState[0], nowState[1], nowState[2], j);
-				if (detectTriangle(newEdge, nowState[1], nowState[2], j)) {
+				if (detectTriangle(newEdge, nowState[1], nowState[2], j) === true) {
 					if (canNotMove(newEdge, toX, toY) === true) {
-						moveQueue[op].push([newEdge, toX, toY, j, INF]);
+						if (depth === 0) {
+							moveQueue[op].push([newEdge, toX, toY, j, INF]);
+						} else {
+							moveQueue[op].push([newEdge, toX, toY, nowState[3], INF]);
+						}
+					} else if (depth === 0) {
+						//moveQueue[me].push([newEdge, toX, toY, j, distanceToGoal(toX, toY)]);
 					} else {
-						nowState.push([newEdge, toX, toY, nowState[3], distanceToGoal(toX, toY)]);
+						//moveQueue[me].push([newEdge, toX, toY, nowState[3], distanceToGoal(toX, toY)]);
 					}
 				} else if (canNotMove(newEdge, toX, toY) === false) {
 					if (depth === 0) {
@@ -201,12 +223,15 @@ const aiLogic = function(vertexHistory) {
 					} else {
 						moveQueue[op].push([newEdge, toX, toY, nowState[3], distanceToGoal(toX, toY)]);
 					}
-				} else {
+				} else if (depth === 0) {
 					moveQueue[op].push([newEdge, toX, toY, j, INF]);
+				} else {
+					moveQueue[op].push([newEdge, toX, toY, nowState[3], INF]);
 				}
 			}
 		}
 	}
+	console.log(moveQueue[0].length);
 	const finalValue = new Array(10).fill(INF);
 	for (let i = 0; i < moveQueue[0].length; i++) {
 		finalValue[moveQueue[0][i][3]] = Math.min(finalValue[moveQueue[0][i][3]], moveQueue[0][i][4]);
