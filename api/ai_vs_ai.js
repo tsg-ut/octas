@@ -17,14 +17,14 @@ for (;;) {
 	const ai = [ai1, ai2][board.activePlayer];
 	let hist = board.trace.reduce((prev, curr) => prev.concat(curr), []);
 	console.log(JSON.stringify(hist));
-	if (board.activePlayer === 1) {
+	if (board.activePlayer === 0) {
 		hist = hist.map(([x, y]) => [8 - x, 8 - y]);
 	}
 	let aiDir = ai(hist);
 	if (aiDir === -1) {
 		throw new Error('Ω＼ζ°)ﾁｰﾝ');
 	}
-	aiDir = (aiDir + board.activePlayer * 4) % 8;
+	aiDir = (aiDir + (1 - board.activePlayer) * 4) % 8;
 	console.log(`AI${board.activePlayer + 1} moves in ${aiDir}`);
 	board.moveTo(aiDir);
 }
