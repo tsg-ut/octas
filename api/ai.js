@@ -119,10 +119,9 @@ const whereToMove = function(edge, nowX, nowY, nowDirection) {
 		return [nowX, nowY + dy[nowDirection] * 2];
 	}
 	if (newY === 0) {
-		if (nowDirection === 0) {
-			if (newX === 4) {
-				return [4, 0];
-			}
+		if (newX === 4) {
+			return [4, 0];
+		} else if (nowDirection === 0) {
 			return [-1, -1];
 		} else if (nowX + dx[nowDirection] * 2 === 0) {
 			return [1, 2];
@@ -132,10 +131,9 @@ const whereToMove = function(edge, nowX, nowY, nowDirection) {
 		return [nowX + dx[nowDirection] * 2, nowY];
 	}
 	if (newY === 10) {
-		if (nowDirection === 4) {
-			if (newX === 4) {
-				return [4, 10];
-			}
+		if (newX === 4) {
+			return [4, 10];
+		} else if (nowDirection === 4) {
 			return [-1, -1];
 		} else if (nowX + dx[nowDirection] * 2 === 0) {
 			return [1, 8];
@@ -213,23 +211,23 @@ const aiLogic = function(vertexHistory) {
 				const newEdge = updateEdge(nowState[0], nowState[1], nowState[2], j);
 				if (detectTriangle(newEdge, nowState[1], nowState[2], j) === true) {
 					if (canNotMove(newEdge, toX, toY) === true) {
-						if (depth === 0 && i >= tmpLength) {
+						if (depth === 0 && i < tmpLength) {
 							moveQueue[op].push([newEdge, toX, toY, j, -INF]);
 						} else {
 							moveQueue[op].push([newEdge, toX, toY, nowState[3], -INF]);
 						}
-					} else if (depth === 0) {
-						//moveQueue[me].push([newEdge, toX, toY, j, distanceToGoal(toX, toY)]);
+					} else if (depth === 0 && i < tmpLength) {
+						moveQueue[me].push([newEdge, toX, toY, j, distanceToGoal(toX, toY)]);
 					} else {
-						//moveQueue[me].push([newEdge, toX, toY, nowState[3], distanceToGoal(toX, toY)]);
+						moveQueue[me].push([newEdge, toX, toY, nowState[3], distanceToGoal(toX, toY)]);
 					}
 				} else if (canNotMove(newEdge, toX, toY) === false) {
-					if (depth === 0 && i >= tmpLength) {
+					if (depth === 0 && i < tmpLength) {
 						moveQueue[op].push([newEdge, toX, toY, j, distanceToGoal(toX, toY)]);
 					} else {
 						moveQueue[op].push([newEdge, toX, toY, nowState[3], distanceToGoal(toX, toY)]);
 					}
-				} else if (depth === 0 && i >= tmpLength) {
+				} else if (depth === 0 && i < tmpLength) {
 					moveQueue[op].push([newEdge, toX, toY, j, -INF]);
 				} else {
 					moveQueue[op].push([newEdge, toX, toY, nowState[3], -INF]);
