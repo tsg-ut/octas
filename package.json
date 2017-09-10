@@ -8,7 +8,7 @@
     "pug": "pug index.pug",
     "less": "lessc index.less | postcss --use autoprefixer -o index.css",
     "build": "concurrently \"npm run browserify\" \"npm run pug\" \"npm run less\"",
-    "lint": "eslint \"lib/**/*.js\"",
+    "lint": "eslint \"lib/**/*.js\" \"api/**/*.js\"",
     "test": "npm run lint",
     "start": "cd api && node index.js"
   },
