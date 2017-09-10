@@ -154,18 +154,8 @@ const canNotMove = function(edge, nowX, nowY) {
 	}
 	return true;
 };
-/*
+
 const vertexToEdge = function(vertexHistory) {
-
-}
-*/
-
-const aiLogic = function(vertexHistory) {
-	const arrayLength = vertexHistory.length;
-	for (let i = 0; i < arrayLength; i++) {
-		vertexHistory[i] = [vertexHistory[i][0] + 1, vertexHistory[i][1] + 1];
-	}
-	// let edge = new Array(11);
 	const edge = new Array(11);
 	for (let i = 0; i < 11; i++) {
 		edge[i] = new Array(11);
@@ -173,7 +163,7 @@ const aiLogic = function(vertexHistory) {
 			edge[i][j] = new Array(8).fill(false);
 		}
 	}
-	for (let i = 1; i < arrayLength; i++) {
+	for (let i = 1; i < vertexHistory.length; i++) {
 		const [preX, preY] = vertexHistory[i - 1];
 		const [nowX, nowY] = vertexHistory[i];
 		for (let j = 0; j < 8; j++) {
@@ -183,90 +173,72 @@ const aiLogic = function(vertexHistory) {
 			}
 		}
 	}
+	return edge;
+};
+
+const depthSearch = function(depth, edge, nowX, nowY) {
+	if (depth === 2) {
+		return distanceToGoal(nowX, nowY);
+	}
+	let ret = INF;
+	let retIndex = -1;
+	for (let i = 0; i < 8; i++) {
+		const [toX, toY] = whereToMove(edge, nowX, nowY, i);
+		if (toX === -1) {
+			continue;
+		}
+		if (toY === 0) {
+			if (depth % 2 === 0) {
+				if (depth === 0) {
+					return i;
+				}
+				return -INF;
+			}
+			continue;
+		}
+		if (toY === 10) {
+			if (depth % 2 === 1) {
+				if (depth % 2 === 0) {
+					return i;
+				}
+				return -INF;
+			}
+			continue;
+		}
+		const newEdge = updateEdge(edge, nowX, nowY, i);
+		if (detectTriangle(newEdge, nowX, nowY, i) === true) {
+			if (canNotMove(newEdge, toX, toY) === false) {
+				const tmpVal = depthSearch(depth, newEdge, toX, toY);
+				if (ret > tmpVal) {
+					ret = tmpVal;
+					retIndex = i;
+				}
+			}
+		} else if (canNotMove(newEdge, toX, toY) === false) {
+			const tmpVal = depthSearch(depth + 1, newEdge, toX, toY) * -1;
+			if (ret > tmpVal) {
+				ret = tmpVal;
+				retIndex = i;
+			}
+		}
+	}
+	if (depth !== 0) {
+		return ret;
+	}
+	return retIndex;
+};
+
+const aiLogic = function(vertexHistory) {
+	const arrayLength = vertexHistory.length;
+	for (let i = 0; i < arrayLength; i++) {
+		vertexHistory[i] = [vertexHistory[i][0] + 1, vertexHistory[i][1] + 1];
+	}
+	const edge = vertexToEdge(vertexHistory);
 	const [nowX, nowY] = vertexHistory[arrayLength - 1];
 
-	const moveQueue = [[], []];
-	moveQueue[0].push([edge, nowX, nowY, 0, 0]);
+	const ret = depthSearch(0, edge, nowX, nowY);
 
-	for (let depth = 0; depth < 2; depth++) {
-		const me = depth % 2;
-		const op = (depth % 2) ^ 1;
-		moveQueue[op] = [];
-
-		const tmpLength = moveQueue[me].length;
-		for (let i = 0; i < moveQueue[me].length; i++) {
-			const nowState = moveQueue[me][i];
-			if (nowState[4] === INF || nowState[4] === -1 * INF) {
-				moveQueue[op].push([nowState[0], nowState[1], nowState[2], nowState[3], nowState[4] * -1]);
-				continue;
-			}
-			for (let j = 0; j < 8; j++) {
-				const [toX, toY] = whereToMove(nowState[0], nowState[1], nowState[2], j);
-				if (toX === -1) {
-					continue;
-				}
-				if (toY === 0) {
-					if (depth === 0 && i < tmpLength) {
-						moveQueue[op].push([edge, toX, toY, j, (me === 0 ? -1 : 1) * INF]);
-					} else {
-						moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? -1 : 1) * INF]);
-					}
-					continue;
-				}
-				if (toY === 10) {
-					if (depth === 0 && i < tmpLength) {
-						moveQueue[op].push([edge, toX, toY, j, (me === 0 ? 1 : -1) * INF]);
-					} else {
-						moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? 1 : -1) * INF]);
-					}
-					continue;
-				}
-				const newEdge = updateEdge(nowState[0], nowState[1], nowState[2], j);
-				if (detectTriangle(newEdge, nowState[1], nowState[2], j) === true) {
-					if (canNotMove(newEdge, toX, toY) === true) {
-						if (depth === 0 && i < tmpLength) {
-							moveQueue[op].push([newEdge, toX, toY, j, INF]);
-						} else {
-							moveQueue[op].push([newEdge, toX, toY, nowState[3], INF]);
-						}
-					} else if (depth === 0 && i < tmpLength) {
-						moveQueue[me].push([newEdge, toX, toY, j, -distanceToGoal(toX, toY)]);
-					} else {
-						moveQueue[me].push([newEdge, toX, toY, nowState[3], -distanceToGoal(toX, toY)]);
-					}
-				} else if (canNotMove(newEdge, toX, toY) === false) {
-					if (depth === 0 && i < tmpLength) {
-						moveQueue[op].push([newEdge, toX, toY, j, -distanceToGoal(toX, toY)]);
-					} else {
-						moveQueue[op].push([newEdge, toX, toY, nowState[3], -distanceToGoal(toX, toY)]);
-					}
-				} else if (depth === 0 && i < tmpLength) {
-					moveQueue[op].push([newEdge, toX, toY, j, INF]);
-				} else {
-					moveQueue[op].push([newEdge, toX, toY, nowState[3], INF]);
-				}
-			}
-		}
-	}
-	console.log(moveQueue[0].length);
-	const finalValue = new Array(8).fill(INF);
-	for (let i = 0; i < moveQueue[0].length; i++) {
-		finalValue[moveQueue[0][i][3]] = Math.min(finalValue[moveQueue[0][i][3]], moveQueue[0][i][4]);
-	}
-	for (let i = 0; i < 8; i++) {
-		if (finalValue[i] === INF) {
-			finalValue[i] *= -1;
-		}
-	}
-	let bestDirection = -1;
-	let bestValue = -INF - 1;
-	for (let i = 0; i < 8; i++) {
-		if (bestValue < finalValue[i]) {
-			bestValue = finalValue[i];
-			bestDirection = i;
-		}
-	}
-	return bestDirection;
+	return ret;
 };
 
 module.exports = aiLogic;
