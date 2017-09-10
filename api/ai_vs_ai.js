@@ -5,20 +5,20 @@ const ai2 = require('./ai');
 
 const board = new Board();
 
-board.on('win', (winner) => {
-	console.log(`AI${winner + 1} won`);
-});
-
 ai1.time = 0;
 ai2.time = 0;
 ai1.n = 0;
 ai2.n = 0;
-ai1.ainame = 'AI1';
-ai2.ainame = 'AI2';
+ai1.ainame = 'AI(old)';
+ai2.ainame = 'AI(new)';
 
 const reverse = false;
 
 const ais = reverse ? [ai1, ai2] : [ai2, ai1];
+
+board.on('win', (winner) => {
+	console.log(`${ais[winner].ainame} won`);
+});
 
 for (;;) {
 	const point = board.getCurrentPoint();
