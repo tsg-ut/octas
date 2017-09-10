@@ -198,7 +198,7 @@ const depthSearch = function(depth, edge, nowX, nowY) {
 		}
 		if (toY === 10) {
 			if (depth % 2 === 1) {
-				if (depth % 2 === 0) {
+				if (depth === 0) {
 					return i;
 				}
 				return -INF;
@@ -237,6 +237,15 @@ const aiLogic = function(vertexHistory) {
 	const [nowX, nowY] = vertexHistory[arrayLength - 1];
 
 	const ret = depthSearch(0, edge, nowX, nowY);
+
+	if (ret === -1) {
+		for (let i = 0; i < 8; i++) {
+			const [toX, toY] = whereToMove(edge, nowX, nowY, i);
+			if (toX !== -1 && toY !== -1) {
+				return i;
+			}
+		}
+	}
 
 	return ret;
 };
