@@ -189,6 +189,8 @@ const aiLogic = function(vertexHistory) {
 		const me = depth % 2;
 		const op = (depth % 2) ^ 1;
 		moveQueue[op] = [];
+
+		const tmpLength = moveQueue[me].length;
 		for (let i = 0; i < moveQueue[me].length; i++) {
 			const nowState = moveQueue[me][i];
 			if (nowState[4] === INF || nowState[4] === -1 * INF) {
@@ -201,20 +203,20 @@ const aiLogic = function(vertexHistory) {
 					continue;
 				}
 				if (toY === 0) {
-					moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? -1 : 1) * INF]);
+					moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? 1 : -1) * INF]);
 					continue;
 				}
 				if (toY === 10) {
-					moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? 1 : -1) * INF]);
+					moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? -1 : 1) * INF]);
 					continue;
 				}
 				const newEdge = updateEdge(nowState[0], nowState[1], nowState[2], j);
 				if (detectTriangle(newEdge, nowState[1], nowState[2], j) === true) {
 					if (canNotMove(newEdge, toX, toY) === true) {
-						if (depth === 0) {
-							moveQueue[op].push([newEdge, toX, toY, j, INF]);
+						if (depth === 0 && i >= tmpLength) {
+							moveQueue[op].push([newEdge, toX, toY, j, -INF]);
 						} else {
-							moveQueue[op].push([newEdge, toX, toY, nowState[3], INF]);
+							moveQueue[op].push([newEdge, toX, toY, nowState[3], -INF]);
 						}
 					} else if (depth === 0) {
 						//moveQueue[me].push([newEdge, toX, toY, j, distanceToGoal(toX, toY)]);
@@ -222,21 +224,21 @@ const aiLogic = function(vertexHistory) {
 						//moveQueue[me].push([newEdge, toX, toY, nowState[3], distanceToGoal(toX, toY)]);
 					}
 				} else if (canNotMove(newEdge, toX, toY) === false) {
-					if (depth === 0) {
+					if (depth === 0 && i >= tmpLength) {
 						moveQueue[op].push([newEdge, toX, toY, j, distanceToGoal(toX, toY)]);
 					} else {
 						moveQueue[op].push([newEdge, toX, toY, nowState[3], distanceToGoal(toX, toY)]);
 					}
-				} else if (depth === 0) {
-					moveQueue[op].push([newEdge, toX, toY, j, INF]);
+				} else if (depth === 0 && i >= tmpLength) {
+					moveQueue[op].push([newEdge, toX, toY, j, -INF]);
 				} else {
-					moveQueue[op].push([newEdge, toX, toY, nowState[3], INF]);
+					moveQueue[op].push([newEdge, toX, toY, nowState[3], -INF]);
 				}
 			}
 		}
 	}
 	console.log(moveQueue[0].length);
-	const finalValue = new Array(10).fill(INF);
+	const finalValue = new Array(8).fill(INF);
 	for (let i = 0; i < moveQueue[0].length; i++) {
 		finalValue[moveQueue[0][i][3]] = Math.min(finalValue[moveQueue[0][i][3]], moveQueue[0][i][4]);
 	}
