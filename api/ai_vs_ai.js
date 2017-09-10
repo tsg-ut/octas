@@ -27,7 +27,7 @@ for (;;) {
 	}
 	const ai = ais[board.activePlayer];
 	let hist = board.trace.reduce((prev, curr) => prev.concat(curr), []);
-	console.log(JSON.stringify(hist));
+	console.log(`${ai.ainame}'s turn: ${JSON.stringify(hist)}`);
 	if (board.activePlayer === 0) {
 		hist = hist.map(([x, y]) => [8 - x, 8 - y]);
 	}
