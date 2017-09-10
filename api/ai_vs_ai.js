@@ -13,13 +13,19 @@ ai1.time = 0;
 ai2.time = 0;
 ai1.n = 0;
 ai2.n = 0;
+ai1.ainame = 'AI1';
+ai2.ainame = 'AI2';
+
+const reverse = false;
+
+const ais = reverse ? [ai1, ai2] : [ai2, ai1];
 
 for (;;) {
 	const point = board.getCurrentPoint();
 	if (!point || point.movableDirections.size === 0) {
 		break;
 	}
-	const ai = [ai1, ai2][board.activePlayer];
+	const ai = ais[board.activePlayer];
 	let hist = board.trace.reduce((prev, curr) => prev.concat(curr), []);
 	console.log(JSON.stringify(hist));
 	if (board.activePlayer === 0) {
@@ -33,7 +39,7 @@ for (;;) {
 		throw new Error('Ω＼ζ°)ﾁｰﾝ');
 	}
 	aiDir = (aiDir + (1 - board.activePlayer) * 4) % 8;
-	console.log(`AI${board.activePlayer + 1} moves in ${aiDir}`);
+	console.log(`${ai.ainame} moves in ${aiDir}`);
 	board.moveTo(aiDir);
 }
 
