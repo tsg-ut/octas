@@ -1,10 +1,8 @@
 const dx = [0, 1, 1, 1, 0, -1, -1, -1];
 const dy = [-1, -1, 0, 1, 1, 1, 0, -1];
 const INF = 1000000;
-
-const distanceToGoal = function(X, Y) {
-	return Y * 20 + Math.abs(X - 5) * (Y < 4 ? 1 : -1) + Math.floor(Math.random() * 4) - 2;
-};
+let searchDepth = 4;
+let startMs = null;
 
 const detectTriangle = function(edge, nowX, nowY, nowDirection) {
 	for (let i = 0; i < 8; i++) {
@@ -34,7 +32,7 @@ const detectTriangle = function(edge, nowX, nowY, nowDirection) {
 };
 
 const updateEdge = function(edge, nowX, nowY, nowDirection) {
-	let ret = [];
+	const ret = [];
 	let newX = nowX + dx[nowDirection];
 	let newY = nowY + dy[nowDirection];
 	ret.push([nowX, nowY, nowDirection]);
@@ -166,17 +164,35 @@ const vertexToEdge = function(vertexHistory) {
 	return edge;
 };
 
+const distanceToGoal = function(edge, X, Y) {
+	let end = true;
+	for (let i = 0; i < 8; i++) {
+		const [toX, toY] = whereToMove(edge, X, Y, i);
+		if (toX !== -1 && toY !== -1) {
+			end = false;
+		}
+	}
+	if (end === true) {
+		return INF;
+	}
+	return Y * 20 + Math.abs(X - 5) * (Y < 4 ? 1 : -1) + Math.floor(Math.random() * 4) - 2;
+};
+
 const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
+	if (new Date().getTime() - startMs > 10000) {
+		return -1;
+	}
 	let ret = INF;
 	let retIndex = -1;
-	if (depth === 2) {
+	if (depth === searchDepth) {
+		ret = -INF;
 		for (let i = 0; i < 8; i++) {
 			const [toX, toY] = whereToMove(edge, nowX, nowY, i);
 			if (toX === -1) {
 				continue;
 			}
-			const tmpVal = distanceToGoal(toX, toY);
-			if (ret > tmpVal) {
+			const tmpVal = distanceToGoal(edge, toX, toY);
+			if (ret < tmpVal) {
 				ret = tmpVal;
 			}
 		}
@@ -232,6 +248,7 @@ const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
 };
 
 const aiLogic = function(vertexHistory) {
+	startMs = new Date().getTime();
 	const arrayLength = vertexHistory.length;
 	for (let i = 0; i < arrayLength; i++) {
 		vertexHistory[i] = [vertexHistory[i][0] + 1, vertexHistory[i][1] + 1];
@@ -239,7 +256,12 @@ const aiLogic = function(vertexHistory) {
 	const edge = vertexToEdge(vertexHistory);
 	const [nowX, nowY] = vertexHistory[arrayLength - 1];
 
-	const ret = depthSearch(0, edge, nowX, nowY, true);
+	let ret = depthSearch(0, edge, nowX, nowY, true);
+	if (new Date().getTime() - startMs > 10000) {
+		searchDepth = 2;
+		ret = depthSearch(0, edge, nowX, nowY, true);
+		searchDepth = 4;
+	}
 
 	if (ret === -1) {
 		for (let i = 0; i < 8; i++) {
