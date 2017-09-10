@@ -37,7 +37,7 @@ const app = http.createServer((req, res) => {
 });
 const io = socketIO(app);
 
-const clients = [];
+let index = -1;
 const board = new Board();
 
 const move = (direction, player) => {
@@ -51,25 +51,35 @@ const move = (direction, player) => {
 		if (point !== null && point.movableDirections.size !== 0) {
 			setTimeout(() => {
 				const data = board.trace.reduce((prev, curr) => prev.concat(curr), []);
-				console.log(data);
+				console.log(JSON.stringify(data));
 				const aiDirection = ai(data);
 				if (aiDirection === -1) {
 					throw new Error('no available move!?!!?');
 				}
+				console.log('AI moves in:', aiDirection);
 				move(aiDirection, 1);
 			}, 600);
 		}
 	}
 };
 
+board.on('win', (winner) => {
+	console.log(`${winner} won`);
+});
+
 io.on('connection', (client) => {
-	const index = clients.push(client) - 1;
+	index++;
+	if (index === 1) {
+		index++; // kuso
+	}
 	if (index === 0) {
+		const index2 = index;
 		client.on('move', (data) => {
-			move(data.direction, index);
+			move(data.direction, index2);
 		});
 	}
 	client.emit('login', {player: index});
+	console.log(index);
 });
 
 app.listen(process.env.PORT || 3000);
