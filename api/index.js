@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const fs = require('fs');
 const http = require('http');
 const socketIO = require('socket.io');
