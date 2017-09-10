@@ -200,8 +200,12 @@ const aiLogic = function(vertexHistory) {
 				if (toX === -1) {
 					continue;
 				}
-				if (toY === 0 || toY === 10) {
-					moveQueue[op].push([edge, toX, toY, nowState[3], -1 * INF]);
+				if (toY === 0) {
+					moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? -1 : 1) * INF]);
+					continue;
+				}
+				if (toY === 10) {
+					moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? 1 : -1) * INF]);
 					continue;
 				}
 				const newEdge = updateEdge(nowState[0], nowState[1], nowState[2], j);
