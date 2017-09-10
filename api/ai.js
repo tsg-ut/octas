@@ -3,7 +3,7 @@ const dy = [-1, -1, 0, 1, 1, 1, 0, -1];
 const INF = 1000000;
 
 const distanceToGoal = function(X, Y) {
-	return Y * 10 + Math.abs(X - 5) * (Y < 4 ? 1 : -1);
+	return Y * 20 + Math.abs(X - 5) * (Y < 4 ? 1 : -1);
 };
 
 const detectTriangle = function(edge, nowX, nowY, nowDirection) {
@@ -176,12 +176,22 @@ const vertexToEdge = function(vertexHistory) {
 	return edge;
 };
 
-const depthSearch = function(depth, edge, nowX, nowY) {
-	if (depth === 2) {
-		return distanceToGoal(nowX, nowY);
-	}
+const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
 	let ret = INF;
 	let retIndex = -1;
+	if (depth === 2) {
+		for (let i = 0; i < 8; i++) {
+			const [toX, toY] = whereToMove(edge, nowX, nowY, i);
+			if (toX === -1) {
+				continue;
+			}
+			const tmpVal = distanceToGoal(toX, toY);
+			if (ret > tmpVal) {
+				ret = tmpVal;
+			}
+		}
+		return ret;
+	}
 	for (let i = 0; i < 8; i++) {
 		const [toX, toY] = whereToMove(edge, nowX, nowY, i);
 		if (toX === -1) {
@@ -189,7 +199,7 @@ const depthSearch = function(depth, edge, nowX, nowY) {
 		}
 		if (toY === 0) {
 			if (depth % 2 === 0) {
-				if (depth === 0) {
+				if (depth === 0 && firstTime === true) {
 					return i;
 				}
 				return -INF;
@@ -198,7 +208,7 @@ const depthSearch = function(depth, edge, nowX, nowY) {
 		}
 		if (toY === 10) {
 			if (depth % 2 === 1) {
-				if (depth === 0) {
+				if (depth === 0 && firstTime === true) {
 					return i;
 				}
 				return -INF;
@@ -208,24 +218,24 @@ const depthSearch = function(depth, edge, nowX, nowY) {
 		const newEdge = updateEdge(edge, nowX, nowY, i);
 		if (detectTriangle(newEdge, nowX, nowY, i) === true) {
 			if (canNotMove(newEdge, toX, toY) === false) {
-				const tmpVal = depthSearch(depth, newEdge, toX, toY);
+				const tmpVal = depthSearch(depth, newEdge, toX, toY, false);
 				if (ret > tmpVal) {
 					ret = tmpVal;
 					retIndex = i;
 				}
 			}
 		} else if (canNotMove(newEdge, toX, toY) === false) {
-			const tmpVal = depthSearch(depth + 1, newEdge, toX, toY) * -1;
+			const tmpVal = depthSearch(depth + 1, newEdge, toX, toY, true) * -1;
 			if (ret > tmpVal) {
 				ret = tmpVal;
 				retIndex = i;
 			}
 		}
 	}
-	if (depth !== 0) {
-		return ret;
+	if (depth === 0 && firstTime === true) {
+		return retIndex;
 	}
-	return retIndex;
+	return ret;
 };
 
 const aiLogic = function(vertexHistory) {
@@ -236,7 +246,7 @@ const aiLogic = function(vertexHistory) {
 	const edge = vertexToEdge(vertexHistory);
 	const [nowX, nowY] = vertexHistory[arrayLength - 1];
 
-	const ret = depthSearch(0, edge, nowX, nowY);
+	const ret = depthSearch(0, edge, nowX, nowY, true);
 
 	if (ret === -1) {
 		for (let i = 0; i < 8; i++) {
