@@ -119,8 +119,8 @@ const whereToMove = function(edge, nowX, nowY, nowDirection) {
 		return [nowX, nowY + dy[nowDirection] * 2];
 	}
 	if (newY === 0) {
-		if (newX === 4) {
-			return [4, 0];
+		if (newX === 5) {
+			return [5, 0];
 		} else if (nowDirection === 0) {
 			return [-1, -1];
 		} else if (nowX + dx[nowDirection] * 2 === 0) {
@@ -131,8 +131,8 @@ const whereToMove = function(edge, nowX, nowY, nowDirection) {
 		return [nowX + dx[nowDirection] * 2, nowY];
 	}
 	if (newY === 10) {
-		if (newX === 4) {
-			return [4, 10];
+		if (newX === 5) {
+			return [5, 10];
 		} else if (nowDirection === 4) {
 			return [-1, -1];
 		} else if (nowX + dx[nowDirection] * 2 === 0) {
@@ -201,11 +201,19 @@ const aiLogic = function(vertexHistory) {
 					continue;
 				}
 				if (toY === 0) {
-					moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? 1 : -1) * INF]);
+					if (depth === 0 && i < tmpLength) {
+						moveQueue[op].push([edge, toX, toY, j, (me === 0 ? 1 : -1) * INF]);
+					} else {
+						moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? 1 : -1) * INF]);
+					}
 					continue;
 				}
 				if (toY === 10) {
-					moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? -1 : 1) * INF]);
+					if (depth === 0 && i < tmpLength) {
+						moveQueue[op].push([edge, toX, toY, j, (me === 0 ? -1 : 1) * INF]);
+					} else {
+						moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? -1 : 1) * INF]);
+					}
 					continue;
 				}
 				const newEdge = updateEdge(nowState[0], nowState[1], nowState[2], j);
