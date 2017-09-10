@@ -154,6 +154,11 @@ const canNotMove = function(edge, nowX, nowY) {
 	}
 	return true;
 };
+/*
+const vertexToEdge = function(vertexHistory) {
+
+}
+*/
 
 const aiLogic = function(vertexHistory) {
 	const arrayLength = vertexHistory.length;
@@ -183,7 +188,7 @@ const aiLogic = function(vertexHistory) {
 	const moveQueue = [[], []];
 	moveQueue[0].push([edge, nowX, nowY, 0, 0]);
 
-	for (let depth = 0; depth < 4; depth++) {
+	for (let depth = 0; depth < 2; depth++) {
 		const me = depth % 2;
 		const op = (depth % 2) ^ 1;
 		moveQueue[op] = [];
@@ -202,17 +207,17 @@ const aiLogic = function(vertexHistory) {
 				}
 				if (toY === 0) {
 					if (depth === 0 && i < tmpLength) {
-						moveQueue[op].push([edge, toX, toY, j, (me === 0 ? 1 : -1) * INF]);
+						moveQueue[op].push([edge, toX, toY, j, (me === 0 ? -1 : 1) * INF]);
 					} else {
-						moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? 1 : -1) * INF]);
+						moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? -1 : 1) * INF]);
 					}
 					continue;
 				}
 				if (toY === 10) {
 					if (depth === 0 && i < tmpLength) {
-						moveQueue[op].push([edge, toX, toY, j, (me === 0 ? -1 : 1) * INF]);
+						moveQueue[op].push([edge, toX, toY, j, (me === 0 ? 1 : -1) * INF]);
 					} else {
-						moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? -1 : 1) * INF]);
+						moveQueue[op].push([edge, toX, toY, nowState[3], (me === 0 ? 1 : -1) * INF]);
 					}
 					continue;
 				}
@@ -220,25 +225,25 @@ const aiLogic = function(vertexHistory) {
 				if (detectTriangle(newEdge, nowState[1], nowState[2], j) === true) {
 					if (canNotMove(newEdge, toX, toY) === true) {
 						if (depth === 0 && i < tmpLength) {
-							moveQueue[op].push([newEdge, toX, toY, j, -INF]);
+							moveQueue[op].push([newEdge, toX, toY, j, INF]);
 						} else {
-							moveQueue[op].push([newEdge, toX, toY, nowState[3], -INF]);
+							moveQueue[op].push([newEdge, toX, toY, nowState[3], INF]);
 						}
 					} else if (depth === 0 && i < tmpLength) {
-						moveQueue[me].push([newEdge, toX, toY, j, distanceToGoal(toX, toY)]);
+						moveQueue[me].push([newEdge, toX, toY, j, -distanceToGoal(toX, toY)]);
 					} else {
-						moveQueue[me].push([newEdge, toX, toY, nowState[3], distanceToGoal(toX, toY)]);
+						moveQueue[me].push([newEdge, toX, toY, nowState[3], -distanceToGoal(toX, toY)]);
 					}
 				} else if (canNotMove(newEdge, toX, toY) === false) {
 					if (depth === 0 && i < tmpLength) {
-						moveQueue[op].push([newEdge, toX, toY, j, distanceToGoal(toX, toY)]);
+						moveQueue[op].push([newEdge, toX, toY, j, -distanceToGoal(toX, toY)]);
 					} else {
-						moveQueue[op].push([newEdge, toX, toY, nowState[3], distanceToGoal(toX, toY)]);
+						moveQueue[op].push([newEdge, toX, toY, nowState[3], -distanceToGoal(toX, toY)]);
 					}
 				} else if (depth === 0 && i < tmpLength) {
-					moveQueue[op].push([newEdge, toX, toY, j, -INF]);
+					moveQueue[op].push([newEdge, toX, toY, j, INF]);
 				} else {
-					moveQueue[op].push([newEdge, toX, toY, nowState[3], -INF]);
+					moveQueue[op].push([newEdge, toX, toY, nowState[3], INF]);
 				}
 			}
 		}
@@ -248,10 +253,15 @@ const aiLogic = function(vertexHistory) {
 	for (let i = 0; i < moveQueue[0].length; i++) {
 		finalValue[moveQueue[0][i][3]] = Math.min(finalValue[moveQueue[0][i][3]], moveQueue[0][i][4]);
 	}
-	let bestDirection = -1;
-	let bestValue = INF;
 	for (let i = 0; i < 8; i++) {
-		if (bestValue > finalValue[i]) {
+		if (finalValue[i] === INF) {
+			finalValue[i] *= -1;
+		}
+	}
+	let bestDirection = -1;
+	let bestValue = -INF - 1;
+	for (let i = 0; i < 8; i++) {
+		if (bestValue < finalValue[i]) {
 			bestValue = finalValue[i];
 			bestDirection = i;
 		}
