@@ -183,9 +183,13 @@ const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
 			if (toX === -1) {
 				continue;
 			}
+			const repair = updateEdge(edge, nowX, nowY, i);
 			const tmpVal = distanceToGoal(edge, toX, toY);
 			if (ret > tmpVal) {
 				ret = tmpVal;
+			}
+			for (let j = 0; j < repair.length; j++) {
+				edge[repair[j][0]][repair[j][1]][repair[j][2]] = false;
 			}
 		}
 		return ret;
