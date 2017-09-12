@@ -218,19 +218,19 @@ const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
 			continue;
 		}
 		const repair = updateEdge(edge, nowX, nowY, i);
-		if (detectTriangle(edge, nowX, nowY, i) === true) {
-			if (canNotMove(edge, toX, toY) === false) {
+		if (canNotMove(edge, toX, toY) === false) {
+			if (detectTriangle(edge, nowX, nowY, i) === true) {
 				const tmpVal = depthSearch(depth, edge, toX, toY, false);
 				if (ret > tmpVal) {
 					ret = tmpVal;
 					retIndex = i;
 				}
-			}
-		} else if (canNotMove(edge, toX, toY) === false) {
-			const tmpVal = depthSearch(depth + 1, edge, toX, toY, true) * -1;
-			if (ret > tmpVal) {
-				ret = tmpVal;
-				retIndex = i;
+			} else {
+				const tmpVal = depthSearch(depth + 1, edge, toX, toY, true) * -1;
+				if (ret > tmpVal) {
+					ret = tmpVal;
+					retIndex = i;
+				}
 			}
 		}
 		for (let j = 0; j < repair.length; j++) {
