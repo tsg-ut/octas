@@ -82,14 +82,14 @@ io.on('connection', (client) => {
 		// Reset all clients
 		io.emit('update', {
 			activePlayer: board.activePlayer,
-			trace: board.trace,
+			moves: board.moves,
 		});
 	} else {
 		// index 1 is for AI
 		index = 2;
 		client.emit('update', {
 			activePlayer: board.activePlayer,
-			trace: board.trace,
+			moves: board.moves,
 		});
 	}
 	client.emit('login', {
