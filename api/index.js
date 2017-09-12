@@ -73,6 +73,9 @@ const gameEnd = () => {
 	}
 };
 
+const onmove = (data) => {
+	move(data.direction, 0);
+};
 const ondisconnect = () => {
 	console.log('Player disconnected');
 	gameEnd();
@@ -84,12 +87,11 @@ io.on('connection', (client) => {
 		board = new Board();
 		board.on('win', (winner) => {
 			console.log(`${winner} won`);
+			client.removeListener('move', onmove);
 			client.removeListener('disconnect', ondisconnect);
 			gameEnd();
 		});
-		client.on('move', (data) => {
-			move(data.direction, 0);
-		});
+		client.on('move', onmove);
 		client.once('disconnect', ondisconnect);
 		index = 0;
 		// Reset all clients
