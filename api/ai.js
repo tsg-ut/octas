@@ -172,7 +172,7 @@ const distanceToGoal = function(edge, X, Y) {
 };
 
 const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
-	if (new Date().getTime() - startMs > 10000) {
+	if (searchDepth === 4 && new Date().getTime() - startMs > 10000) {
 		return -1;
 	}
 	let ret = INF;
