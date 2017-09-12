@@ -183,9 +183,13 @@ const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
 			if (toX === -1) {
 				continue;
 			}
+			const repair = updateEdge(edge, nowX, nowY, i);
 			const tmpVal = distanceToGoal(edge, toX, toY);
 			if (ret > tmpVal) {
 				ret = tmpVal;
+			}
+			for (let j = 0; j < repair.length; j++) {
+				edge[repair[j][0]][repair[j][1]][repair[j][2]] = false;
 			}
 		}
 		return ret;
@@ -239,6 +243,17 @@ const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
 	return ret;
 };
 
+const onlyOneWay = function(edge, nowX, nowY) {
+	let counter = 0;
+	for (let i = 0; i < 8; i++) {
+		const [toX, toY] = whereToMove(edge, nowX, nowY, i);
+		if (toX !== -1 && toY !== -1) {
+			counter += 1;
+		}
+	}
+	return counter === 1;
+};
+
 const aiLogic = function(vertexHistory) {
 	startMs = new Date().getTime();
 	const arrayLength = vertexHistory.length;
@@ -247,6 +262,15 @@ const aiLogic = function(vertexHistory) {
 	}
 	const edge = vertexToEdge(vertexHistory);
 	const [nowX, nowY] = vertexHistory[arrayLength - 1];
+
+	if (onlyOneWay(edge, nowX, nowY) === true) {
+		for (let i = 0; i < 8; i++) {
+			const [toX, toY] = whereToMove(edge, nowX, nowY, i);
+			if (toX !== -1 && toY !== -1) {
+				return i;
+			}
+		}
+	}
 
 	let ret = depthSearch(0, edge, nowX, nowY, true);
 	if (new Date().getTime() - startMs > 10000) {
