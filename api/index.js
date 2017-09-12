@@ -38,8 +38,7 @@ const app = http.createServer((req, res) => {
 });
 const io = socketIO(app);
 
-let index = -1;
-const board = new Board();
+let board = null;
 
 const move = (direction, player) => {
 	board.moveTo(direction);
@@ -47,7 +46,7 @@ const move = (direction, player) => {
 		direction,
 		player,
 	});
-	if (board.activePlayer === 1) {
+	if (board && board.activePlayer === 1) {
 		const point = board.getCurrentPoint();
 		if (point !== null && point.movableDirections.size !== 0) {
 			setTimeout(() => {
@@ -64,23 +63,38 @@ const move = (direction, player) => {
 	}
 };
 
-board.on('win', (winner) => {
-	console.log(`${winner} won`);
-});
-
 io.on('connection', (client) => {
-	index++;
-	if (index === 1) {
-		index++; // kuso
-	}
-	if (index === 0) {
-		const index2 = index;
+	let index = null;
+	if (board === null) {
+		board = new Board();
+		board.on('win', (winner) => {
+			console.log(`${winner} won`);
+			board = null;
+		});
 		client.on('move', (data) => {
-			move(data.direction, index2);
+			move(data.direction, 0);
+		});
+		client.on('disconnect', () => {
+			console.log('Player disconnected');
+			board = null;
+		});
+		index = 0;
+		// Reset all clients
+		io.emit('update', {
+			activePlayer: board.activePlayer,
+			trace: board.trace,
+		});
+	} else {
+		// index 1 is for AI
+		index = 2;
+		client.emit('update', {
+			activePlayer: board.activePlayer,
+			trace: board.trace,
 		});
 	}
-	client.emit('login', {player: index});
-	console.log(index);
+	client.emit('login', {
+		id: index,
+	});
 });
 
 app.listen(process.env.PORT || 3000);
