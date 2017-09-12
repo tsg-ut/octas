@@ -39,6 +39,7 @@ const app = http.createServer((req, res) => {
 const io = socketIO(app);
 
 let board = null;
+let timer = null;
 
 const move = (direction, player) => {
 	board.moveTo(direction);
@@ -49,7 +50,8 @@ const move = (direction, player) => {
 	if (board && board.activePlayer === 1) {
 		const point = board.getCurrentPoint();
 		if (point !== null && point.movableDirections.size !== 0) {
-			setTimeout(() => {
+			timer = setTimeout(() => {
+				timer = null;
 				const data = board.trace.reduce((prev, curr) => prev.concat(curr), []);
 				console.log(JSON.stringify(data));
 				const aiDirection = ai(data);
@@ -63,20 +65,28 @@ const move = (direction, player) => {
 	}
 };
 
+const gameEnd = () => {
+	board = null;
+	if (timer !== null) {
+		clearTimeout(timer);
+		timer = null;
+	}
+};
+
 io.on('connection', (client) => {
 	let index = null;
 	if (board === null) {
 		board = new Board();
 		board.on('win', (winner) => {
 			console.log(`${winner} won`);
-			board = null;
+			gameEnd();
 		});
 		client.on('move', (data) => {
 			move(data.direction, 0);
 		});
 		client.on('disconnect', () => {
 			console.log('Player disconnected');
-			board = null;
+			gameEnd();
 		});
 		index = 0;
 		// Reset all clients
