@@ -43,5 +43,7 @@ for (;;) {
 	board.moveTo(aiDir);
 }
 
-console.log('ended: hist=', JSON.stringify(board.trace));
+console.log('ended');
+console.log('trace=', JSON.stringify(board.trace));
+console.log('moves=', JSON.stringify(board.moves));
 console.log(`ai1: avgtime=${ai1.time / ai1.n}; ai2: avgtime=${ai2.time / ai2.n}`);
