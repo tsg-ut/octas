@@ -10,7 +10,7 @@
     "build": "concurrently \"npm run browserify\" \"npm run pug\" \"npm run less\"",
     "lint": "eslint \"lib/**/*.js\" \"api/**/*.js\"",
     "test": "npm run lint",
-    "postinstall": "npm install && npm run build",
+    "heroku-postbuild": "npm run build",
     "start": "cd api && node index.js"
   },
   "repository": {
