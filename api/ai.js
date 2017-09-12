@@ -135,7 +135,8 @@ const whereToMove = function(edge, nowX, nowY, nowDirection) {
 
 const canNotMove = function(edge, nowX, nowY) {
 	for (let i = 0; i < 8; i++) {
-		if (whereToMove(edge, nowX, nowY, i) !== [-1, -1]) {
+		const [toX, toY] = whereToMove(edge, nowX, nowY, i);
+		if (toX !== -1 && toY !== -1) {
 			return false;
 		}
 	}
@@ -245,7 +246,8 @@ const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
 const onlyOneWay = function(edge, nowX, nowY) {
 	let counter = 0;
 	for (let i = 0; i < 8; i++) {
-		if (whereToMove(edge, nowX, nowY, i) !== [-1, -1]) {
+		const [toX, toY] = whereToMove(edge, nowX, nowY, i);
+		if (toX !== -1 && toY !== -1) {
 			counter += 1;
 		}
 	}
@@ -263,7 +265,8 @@ const aiLogic = function(vertexHistory) {
 
 	if (onlyOneWay(edge, nowX, nowY) === true) {
 		for (let i = 0; i < 8; i++) {
-			if (whereToMove(edge, nowX, nowY, i) !== [-1, -1]) {
+			const [toX, toY] = whereToMove(edge, nowX, nowY, i);
+			if (toX !== -1 && toY !== -1) {
 				return i;
 			}
 		}
@@ -278,7 +281,8 @@ const aiLogic = function(vertexHistory) {
 
 	if (ret === -1) {
 		for (let i = 0; i < 8; i++) {
-			if (whereToMove(edge, nowX, nowY, i) !== [-1, -1]) {
+			const [toX, toY] = whereToMove(edge, nowX, nowY, i);
+			if (toX !== -1 && toY !== -1) {
 				return i;
 			}
 		}
