@@ -44,6 +44,9 @@ const [humanID, aiID] = [0, 1];
 const observerID = 2;
 
 const move = (direction, player) => {
+	if (board.activePlayer !== player) {
+		return;
+	}
 	board.moveTo(direction);
 	io.emit('move', {
 		direction,
@@ -54,6 +57,9 @@ const move = (direction, player) => {
 		if (point !== null && point.movableDirections.size !== 0) {
 			timer = setTimeout(() => {
 				timer = null;
+				if (!board) {
+					return;
+				}
 				const data = board.trace.reduce((prev, curr) => prev.concat(curr), []);
 				console.log(JSON.stringify(data));
 				const aiDirection = ai(data);
