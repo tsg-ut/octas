@@ -40,6 +40,8 @@ const io = socketIO(app);
 
 let board = null;
 let timer = null;
+const [humanID, aiID] = [0, 1];
+const observerID = 2;
 
 const move = (direction, player) => {
 	board.moveTo(direction);
@@ -47,7 +49,7 @@ const move = (direction, player) => {
 		direction,
 		player,
 	});
-	if (board && board.activePlayer === 1) {
+	if (board && board.activePlayer === aiID) {
 		const point = board.getCurrentPoint();
 		if (point !== null && point.movableDirections.size !== 0) {
 			timer = setTimeout(() => {
@@ -59,7 +61,7 @@ const move = (direction, player) => {
 					throw new Error('no available move!?!!?');
 				}
 				console.log('AI moves in:', aiDirection);
-				move(aiDirection, 1);
+				move(aiDirection, aiID);
 			}, 600);
 		}
 	}
@@ -74,7 +76,7 @@ const gameEnd = () => {
 };
 
 const onmove = (data) => {
-	move(data.direction, 0);
+	move(data.direction, humanID);
 };
 const ondisconnect = () => {
 	console.log('Player disconnected');
@@ -93,15 +95,14 @@ io.on('connection', (client) => {
 		});
 		client.on('move', onmove);
 		client.once('disconnect', ondisconnect);
-		index = 0;
+		index = humanID;
 		// Reset all clients
 		io.emit('update', {
 			activePlayer: board.activePlayer,
 			moves: board.moves,
 		});
 	} else {
-		// index 1 is for AI
-		index = 2;
+		index = observerID;
 		client.emit('update', {
 			activePlayer: board.activePlayer,
 			moves: board.moves,
