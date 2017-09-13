@@ -26,10 +26,10 @@ for (;;) {
 		break;
 	}
 	const ai = ais[board.activePlayer];
-	let hist = board.trace.reduce((prev, curr) => prev.concat(curr), []);
+	let hist = board.moves.reduce((prev, curr) => prev.concat(curr), []);
 	console.log(`${ai.ainame}'s turn: ${JSON.stringify(hist)}`);
 	if (board.activePlayer === 0) {
-		hist = hist.map(([x, y]) => [8 - x, 8 - y]);
+		hist = hist.map((dir) => (dir + 4) % 8);
 	}
 	const start = new Date();
 	let aiDir = ai(hist);
@@ -38,7 +38,9 @@ for (;;) {
 	if (aiDir === -1) {
 		throw new Error('Ω＼ζ°)ﾁｰﾝ');
 	}
-	aiDir = (aiDir + (1 - board.activePlayer) * 4) % 8;
+	if (board.activePlayer === 0) {
+		aiDir = (aiDir + 4) % 8;
+	}
 	console.log(`${ai.ainame} moves in ${aiDir}`);
 	board.moveTo(aiDir);
 }
