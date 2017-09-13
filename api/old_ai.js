@@ -155,7 +155,7 @@ const canNotMove = function(edge, nowX, nowY) {
 	return true;
 };
 
-const vertexToEdge = function(vertexHistory) {
+const movesToEdge = function(moveHistory) {
 	const edge = new Array(11);
 	for (let i = 0; i < 11; i++) {
 		edge[i] = new Array(11);
@@ -163,17 +163,15 @@ const vertexToEdge = function(vertexHistory) {
 			edge[i][j] = new Array(8).fill(false);
 		}
 	}
-	for (let i = 1; i < vertexHistory.length; i++) {
-		const [preX, preY] = vertexHistory[i - 1];
-		const [nowX, nowY] = vertexHistory[i];
-		for (let j = 0; j < 8; j++) {
-			if (preX + dx[j] === nowX && preY + dy[j] === nowY) {
-				edge[preX][preY][j] = true;
-				edge[nowX][nowY][(j + 4) % 8] = true;
-			}
-		}
+	let x = 5;
+	let y = 5;
+	for (const j of moveHistory) {
+		edge[x][y][j] = true;
+		x += dx[j];
+		y += dy[j];
+		edge[x][y][(j + 4) % 8] = true;
 	}
-	return edge;
+	return {edge, x, y};
 };
 
 const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
@@ -238,13 +236,8 @@ const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
 	return ret;
 };
 
-const aiLogic = function(vertexHistory) {
-	const arrayLength = vertexHistory.length;
-	for (let i = 0; i < arrayLength; i++) {
-		vertexHistory[i] = [vertexHistory[i][0] + 1, vertexHistory[i][1] + 1];
-	}
-	const edge = vertexToEdge(vertexHistory);
-	const [nowX, nowY] = vertexHistory[arrayLength - 1];
+const aiLogic = function(moveHistory) {
+	const {edge, x: nowX, y: nowY} = movesToEdge(moveHistory);
 
 	const ret = depthSearch(0, edge, nowX, nowY, true);
 

@@ -143,7 +143,7 @@ const canNotMove = function(edge, nowX, nowY) {
 	return true;
 };
 
-const vertexToEdge = function(vertexHistory) {
+const movesToEdge = function(moveHistory) {
 	const edge = new Array(11);
 	for (let i = 0; i < 11; i++) {
 		edge[i] = new Array(11);
@@ -151,17 +151,15 @@ const vertexToEdge = function(vertexHistory) {
 			edge[i][j] = new Array(8).fill(false);
 		}
 	}
-	for (let i = 1; i < vertexHistory.length; i++) {
-		const [preX, preY] = vertexHistory[i - 1];
-		const [nowX, nowY] = vertexHistory[i];
-		for (let j = 0; j < 8; j++) {
-			if (preX + dx[j] === nowX && preY + dy[j] === nowY) {
-				edge[preX][preY][j] = true;
-				edge[nowX][nowY][(j + 4) % 8] = true;
-			}
-		}
+	let x = 5;
+	let y = 5;
+	for (const direction of moveHistory) {
+		edge[x][y][direction] = true;
+		x += dx[direction];
+		y += dy[direction];
+		edge[x][y][(direction + 4) % 8] = true;
 	}
-	return edge;
+	return {edge, x, y};
 };
 
 const distanceToGoal = function(edge, X, Y) {
@@ -254,14 +252,9 @@ const onlyOneWay = function(edge, nowX, nowY) {
 	return counter === 1;
 };
 
-const aiLogic = function(vertexHistory) {
+const aiLogic = function(moveHistory) {
 	startMs = new Date().getTime();
-	const arrayLength = vertexHistory.length;
-	for (let i = 0; i < arrayLength; i++) {
-		vertexHistory[i] = [vertexHistory[i][0] + 1, vertexHistory[i][1] + 1];
-	}
-	const edge = vertexToEdge(vertexHistory);
-	const [nowX, nowY] = vertexHistory[arrayLength - 1];
+	const {edge, x: nowX, y: nowY} = movesToEdge(moveHistory);
 
 	if (onlyOneWay(edge, nowX, nowY) === true) {
 		for (let i = 0; i < 8; i++) {

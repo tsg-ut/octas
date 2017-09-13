@@ -60,7 +60,7 @@ const move = (direction, player) => {
 				if (!board) {
 					return;
 				}
-				const data = board.trace.reduce((prev, curr) => prev.concat(curr), []);
+				const data = board.moves.reduce((prev, curr) => prev.concat(curr), []);
 				console.log(JSON.stringify(data));
 				const aiDirection = ai(data);
 				if (aiDirection === -1) {
