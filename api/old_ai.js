@@ -245,12 +245,13 @@ const aiLogic = function(moveHistory) {
 		for (let i = 0; i < 8; i++) {
 			const [toX, toY] = whereToMove(edge, nowX, nowY, i);
 			if (toX !== -1 && toY !== -1) {
-				return i;
+				return [i];
 			}
 		}
+		return [];
 	}
 
-	return ret;
+	return [ret];
 };
 
 module.exports = aiLogic;

@@ -43,16 +43,21 @@ let timer = null;
 const [humanID, aiID] = [0, 1];
 const observerID = 2;
 
-const move = (direction, player) => {
+const move = (directions, player) => {
 	if (board.activePlayer !== player) {
 		return;
 	}
-	board.moveTo(direction);
+	board.moveTo(directions[0]);
 	io.emit('move', {
-		direction,
+		direction: directions[0],
 		player,
 	});
-	if (board && board.activePlayer === aiID) {
+	if (board && directions.length > 1) {
+		timer = setTimeout(() => {
+			timer = null;
+			move(directions.slice(1), player);
+		}, 600);
+	} else if (board && board.activePlayer === aiID) {
 		const point = board.getCurrentPoint();
 		if (point !== null && point.movableDirections.size !== 0) {
 			timer = setTimeout(() => {
@@ -62,12 +67,12 @@ const move = (direction, player) => {
 				}
 				const data = board.moves.reduce((prev, curr) => prev.concat(curr), []);
 				console.log(JSON.stringify(data));
-				const aiDirection = ai(data);
-				if (aiDirection === -1) {
+				const aiDirections = ai(data);
+				if (aiDirections.length === 0) {
 					throw new Error('no available move!?!!?');
 				}
-				console.log('AI moves in:', aiDirection);
-				move(aiDirection, aiID);
+				console.log('AI moves in:', aiDirections);
+				move(aiDirections, aiID);
 			}, 600);
 		}
 	}
@@ -82,7 +87,7 @@ const gameEnd = () => {
 };
 
 const onmove = (data) => {
-	move(data.direction, humanID);
+	move([data.direction], humanID);
 };
 const ondisconnect = () => {
 	console.log('Player disconnected');

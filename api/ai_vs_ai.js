@@ -32,17 +32,17 @@ for (;;) {
 		hist = hist.map((dir) => (dir + 4) % 8);
 	}
 	const start = new Date();
-	let aiDir = ai(hist);
+	let aiDirs = ai(hist);
 	ai.time += new Date().valueOf() - start.valueOf();
 	ai.n++;
-	if (aiDir === -1) {
+	if (aiDirs.length === 0) {
 		throw new Error('Ω＼ζ°)ﾁｰﾝ');
 	}
 	if (board.activePlayer === 0) {
-		aiDir = (aiDir + 4) % 8;
+		aiDirs = aiDirs.map((aiDir) => (aiDir + 4) % 8);
 	}
-	console.log(`${ai.ainame} moves in ${aiDir}`);
-	board.moveTo(aiDir);
+	console.log(`${ai.ainame} moves in ${aiDirs}`);
+	aiDirs.forEach((aiDir) => board.moveTo(aiDir));
 }
 
 console.log('ended');

@@ -169,12 +169,12 @@ const distanceToGoal = function(edge, X, Y) {
 	return Y * 20 + Math.abs(X - 5) * (Y < 4 ? 1 : -1) + Math.floor(Math.random() * 4) - 2;
 };
 
-const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
+const depthSearch = function(depth, edge, nowX, nowY) {
 	if (searchDepth === 4 && new Date().getTime() - startMs > 10000) {
-		return -1;
+		return {directions: [], score: -1};
 	}
 	let ret = INF;
-	let retIndex = -1;
+	let retIndices = [];
 	if (depth === searchDepth) {
 		for (let i = 0; i < 8; i++) {
 			const [toX, toY] = whereToMove(edge, nowX, nowY, i);
@@ -185,12 +185,13 @@ const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
 			const tmpVal = distanceToGoal(edge, toX, toY);
 			if (ret > tmpVal) {
 				ret = tmpVal;
+				retIndices = [i];
 			}
 			for (let j = 0; j < repair.length; j++) {
 				edge[repair[j][0]][repair[j][1]][repair[j][2]] = false;
 			}
 		}
-		return ret;
+		return {directions: retIndices, score: ret};
 	}
 	for (let i = 0; i < 8; i++) {
 		const [toX, toY] = whereToMove(edge, nowX, nowY, i);
@@ -199,35 +200,29 @@ const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
 		}
 		if (toY === 0) {
 			if (depth % 2 === 0) {
-				if (depth === 0 && firstTime === true) {
-					return i;
-				}
-				return -INF;
+				return {directions: [i], score: -INF};
 			}
 			continue;
 		}
 		if (toY === 10) {
 			if (depth % 2 === 1) {
-				if (depth === 0 && firstTime === true) {
-					return i;
-				}
-				return -INF;
+				return {directions: [i], score: -INF};
 			}
 			continue;
 		}
 		const repair = updateEdge(edge, nowX, nowY, i);
 		if (canNotMove(edge, toX, toY) === false) {
 			if (detectTriangle(edge, nowX, nowY, i) === true) {
-				const tmpVal = depthSearch(depth, edge, toX, toY, false);
+				const {directions, score: tmpVal} = depthSearch(depth, edge, toX, toY);
 				if (ret > tmpVal) {
 					ret = tmpVal;
-					retIndex = i;
+					retIndices = [i].concat(directions);
 				}
 			} else {
-				const tmpVal = depthSearch(depth + 1, edge, toX, toY, true) * -1;
+				const tmpVal = depthSearch(depth + 1, edge, toX, toY).score * -1;
 				if (ret > tmpVal) {
 					ret = tmpVal;
-					retIndex = i;
+					retIndices = [i];
 				}
 			}
 		}
@@ -235,10 +230,7 @@ const depthSearch = function(depth, edge, nowX, nowY, firstTime) {
 			edge[repair[j][0]][repair[j][1]][repair[j][2]] = false;
 		}
 	}
-	if (depth === 0 && firstTime === true) {
-		return retIndex;
-	}
-	return ret;
+	return {directions: retIndices, score: ret};
 };
 
 const onlyOneWay = function(edge, nowX, nowY) {
@@ -260,23 +252,25 @@ const aiLogic = function(moveHistory) {
 		for (let i = 0; i < 8; i++) {
 			const [toX, toY] = whereToMove(edge, nowX, nowY, i);
 			if (toX !== -1 && toY !== -1) {
-				return i;
+				return [i];
 			}
 		}
 	}
 
-	let ret = depthSearch(0, edge, nowX, nowY, true);
+	let ret = depthSearch(0, edge, nowX, nowY).directions;
 	if (new Date().getTime() - startMs > 10000) {
 		searchDepth = 2;
-		ret = depthSearch(0, edge, nowX, nowY, true);
+		ret = depthSearch(0, edge, nowX, nowY).directions;
 		searchDepth = 4;
+		// Next step may fit in 10 seconds...
+		ret = ret.slice(0, 1);
 	}
 
-	if (ret === -1) {
+	if (ret.length === 0) {
 		for (let i = 0; i < 8; i++) {
 			const [toX, toY] = whereToMove(edge, nowX, nowY, i);
 			if (toX !== -1 && toY !== -1) {
-				return i;
+				return [i];
 			}
 		}
 	}
