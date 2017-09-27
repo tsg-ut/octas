@@ -5,7 +5,7 @@
 
 一筆書きゲーム
 
-[最新ビルド](https://kurgm.github.io/octas/)
+[最新ビルド](http://sig.tsg.ne.jp/octas/)
 
 ![ルール](https://pbs.twimg.com/media/CrMVr-vUIAAfpEY.png:orig)
 
