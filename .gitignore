@@ -40,6 +40,7 @@ jspm_packages
 *.DS_Store
 *~
 /index.js
+/worker.js
 *.html
 *.css
 *.map

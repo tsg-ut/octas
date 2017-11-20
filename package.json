@@ -4,7 +4,9 @@
   "description": "一筆書きゲーム",
   "main": "index.js",
   "scripts": {
-    "browserify": "browserify lib/index.js --debug --transform [ babelify --presets [ env ] ] | exorcist index.js.map > index.js",
+    "browserify": "concurrently \"npm run browserify:index\" \"npm run browserify:worker\"",
+    "browserify:index": "browserify lib/index.js --debug --transform [ babelify --presets [ env ] ] | exorcist index.js.map > index.js",
+    "browserify:worker": "browserify lib/worker.js --debug --transform [ babelify --presets [ env ] ] | exorcist worker.js.map > worker.js",
     "pug": "pug index.pug",
     "less": "lessc index.less | postcss --use autoprefixer -o index.css",
     "build": "concurrently \"npm run browserify\" \"npm run pug\" \"npm run less\"",

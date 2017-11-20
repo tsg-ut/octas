@@ -23,6 +23,10 @@ const app = http.createServer((req, res) => {
 		filename = '../index.js';
 		contentType = 'text/javascript';
 		break;
+	case '/worker.js':
+		filename = '../worker.js';
+		contentType = 'text/javascript';
+		break;
 	default:
 		res.writeHead(404, {'Content-Type': 'text/plain'});
 		res.end();
