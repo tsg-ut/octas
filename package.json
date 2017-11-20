@@ -18,14 +18,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kurgm/octas.git"
+    "url": "git+https://github.com/tsg-ut/octas.git"
   },
-  "author": "kurgm",
+  "author": "東京大学理論科学グループ(Theoretical Science Group)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kurgm/octas/issues"
+    "url": "https://github.com/tsg-ut/octas/issues"
   },
-  "homepage": "https://github.com/kurgm/octas#readme",
+  "homepage": "https://github.com/tsg-ut/octas#readme",
   "devDependencies": {
     "babel-eslint": "^8.0.0",
     "eslint": "^4.0.0"
