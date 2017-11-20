@@ -4,7 +4,6 @@ const http = require('http');
 const socketIO = require('socket.io');
 
 const Board = require('../lib/Board');
-const ai = require('./ai');
 
 const app = http.createServer((req, res) => {
 	let filename = null;
@@ -44,43 +43,8 @@ const io = socketIO(app);
 
 let board = null;
 let timer = null;
-const [humanID, aiID] = [0, 1];
+const [humanID/* , aiID */] = [0, 1];
 const observerID = 2;
-
-const move = (directions, player) => {
-	if (board.activePlayer !== player) {
-		return;
-	}
-	board.moveTo(directions[0]);
-	io.emit('move', {
-		direction: directions[0],
-		player,
-	});
-	if (board && directions.length > 1) {
-		timer = setTimeout(() => {
-			timer = null;
-			move(directions.slice(1), player);
-		}, 600);
-	} else if (board && board.activePlayer === aiID) {
-		const point = board.getCurrentPoint();
-		if (point !== null && point.movableDirections.size !== 0) {
-			timer = setTimeout(() => {
-				timer = null;
-				if (!board) {
-					return;
-				}
-				const data = board.moves.reduce((prev, curr) => prev.concat(curr), []);
-				console.log(JSON.stringify(data));
-				const aiDirections = ai(data);
-				if (aiDirections.length === 0) {
-					throw new Error('no available move!?!!?');
-				}
-				console.log('AI moves in:', aiDirections);
-				move(aiDirections, aiID);
-			}, 600);
-		}
-	}
-};
 
 const gameEnd = () => {
 	board = null;
@@ -91,8 +55,14 @@ const gameEnd = () => {
 };
 
 const onmove = (data) => {
-	move([data.direction], humanID);
+	const {direction, player} = data;
+	if (board.activePlayer !== player) {
+		return;
+	}
+	board.moveTo(direction);
+	io.emit('move', {direction, player});
 };
+
 const ondisconnect = () => {
 	console.log('Player disconnected');
 	gameEnd();
