@@ -71,7 +71,7 @@ const ondisconnect = () => {
 io.on('connection', (client) => {
 	let index = null;
 	if (board === null) {
-		board = new Board();
+		board = new Board({height: 9, width: 9});
 		board.on('win', (winner) => {
 			console.log(`${winner} won`);
 			client.removeListener('move', onmove);
@@ -84,13 +84,17 @@ io.on('connection', (client) => {
 		// Reset all clients
 		io.emit('update', {
 			activePlayer: board.activePlayer,
+			height: board.height,
 			moves: board.moves,
+			width: board.width,
 		});
 	} else {
 		index = observerID;
 		client.emit('update', {
 			activePlayer: board.activePlayer,
+			height: board.height,
 			moves: board.moves,
+			width: board.width,
 		});
 	}
 	client.emit('login', {
