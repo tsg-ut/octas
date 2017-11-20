@@ -4,7 +4,7 @@ node_js:
   - "node"
 
 script:
-  - npm run build
+  - npm run build:production
   - npm test
 
 before_deploy:
