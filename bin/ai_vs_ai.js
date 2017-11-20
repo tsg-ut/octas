@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 const Board = require('../lib/Board');
 const ai1 = require('./old_ai');
-const ai2 = require('./ai');
+const ai2 = require('../lib/ai');
 
 const board = new Board();
 
