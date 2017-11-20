@@ -65,6 +65,9 @@ svg#board{
 	.current-point {
 		fill: #ee77ee;
 		cursor: grab;
+		.inactive & {
+			cursor: not-allowed;
+		}
 	}
 	.trace-line {
 		fill: none;
@@ -81,6 +84,9 @@ svg#board{
 		.active-b & {
 			fill: #4444ff;
 			stroke: #0000d1;
+		}
+		.inactive & {
+			cursor: not-allowed;
 		}
 	}
 	&.dragging {

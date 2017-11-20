@@ -4,37 +4,47 @@
   "description": "一筆書きゲーム",
   "main": "index.js",
   "scripts": {
-    "browserify": "browserify lib/index.js --debug --transform [ babelify --presets [ env ] ] | exorcist index.js.map > index.js",
+    "browserify": "concurrently \"npm run browserify:index\" \"npm run browserify:worker\"",
+    "browserify:index": "browserify lib/index.js --debug --transform [ babelify --presets [ env ] --plugins transform-inline-environment-variables ] | exorcist index.js.map > index.js",
+    "browserify:worker": "browserify lib/worker.js --debug --transform [ babelify --presets [ env ] --plugins transform-inline-environment-variables ] | exorcist worker.js.map > worker.js",
     "pug": "pug index.pug",
     "less": "lessc index.less | postcss --use autoprefixer -o index.css",
     "build": "concurrently \"npm run browserify\" \"npm run pug\" \"npm run less\"",
-    "lint": "eslint \"lib/**/*.js\"",
-    "test": "npm run lint"
+    "build:production": "cross-env NODE_ENV=production npm run build",
+    "lint": "eslint \"lib/**/*.js\" \"api/**/*.js\"",
+    "test": "npm run lint",
+    "heroku-postbuild": "npm run build",
+    "start": "cd api && node index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kurgm/octas.git"
+    "url": "git+https://github.com/tsg-ut/octas.git"
   },
-  "author": "kurgm",
+  "author": "東京大学理論科学グループ(Theoretical Science Group)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kurgm/octas/issues"
+    "url": "https://github.com/tsg-ut/octas/issues"
   },
-  "homepage": "https://github.com/kurgm/octas#readme",
+  "homepage": "https://github.com/tsg-ut/octas#readme",
   "devDependencies": {
+    "babel-eslint": "^8.0.0",
+    "eslint": "^4.0.0"
+  },
+  "dependencies": {
     "autoprefixer": "^7.0.0",
     "babel-core": "^6.26.0",
-    "babel-eslint": "^8.0.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.2.0",
     "babel-preset-env": "^1.6.1",
     "babelify": "^8.0.0",
     "browserify": "^14.3.0",
     "concurrently": "^3.4.0",
-    "eslint": "^4.0.0",
+    "cross-env": "^5.1.1",
     "exorcist": "^1.0.0",
     "jquery": "^3.1.0",
     "less": "^2.7.1",
     "postcss-cli": "^4.0.0",
     "pug-cli": "^1.0.0-alpha6",
-    "snapsvg": "^0.5.1"
+    "snapsvg": "^0.5.1",
+    "socket.io": "^2.0.3"
   }
 }
