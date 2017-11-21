@@ -1,45 +1,14 @@
 /* eslint-disable no-console */
-const fs = require('fs');
+const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
+const path = require('path');
 
 const Board = require('../lib/Board');
 
-const app = http.createServer((req, res) => {
-	let filename = null;
-	let contentType = null;
-	switch (req.url) {
-	case '/':
-	case '/index.html':
-		filename = '../index.html';
-		contentType = 'text/html';
-		break;
-	case '/index.css':
-		filename = '../index.css';
-		contentType = 'text/css';
-		break;
-	case '/index.js':
-		filename = '../index.js';
-		contentType = 'text/javascript';
-		break;
-	case '/worker.js':
-		filename = '../worker.js';
-		contentType = 'text/javascript';
-		break;
-	default:
-		res.writeHead(404, {'Content-Type': 'text/plain'});
-		res.end();
-		return;
-	}
-	// eslint-disable-next-line no-sync
-	const stat = fs.statSync(filename);
-	res.writeHead(200, {
-		'Content-Length': stat.size,
-		'Content-Type': contentType,
-	});
-	fs.createReadStream(filename).pipe(res);
-});
-const io = socketIO(app);
+const app = express();
+const server = new http.Server(app);
+const io = socketIO(server);
 
 let board = null;
 let timer = null;
@@ -98,4 +67,11 @@ io.on('connection', (client) => {
 	});
 });
 
-app.listen(process.env.PORT || 3000);
+if (process.env.NODE_ENV !== 'production') {
+	app.get('/', (req, res) => {
+		res.sendFile(path.join(__dirname, '../index.html'));
+	});
+	app.use(express.static(path.join(__dirname, '..')));
+}
+
+server.listen(process.env.PORT || 3000);
