@@ -27,7 +27,7 @@ io.on('connection', (client) => {
 
 	client.on('create-room', (reqID, {vstype, name: name_ = null, width = 9, height = 9}) => {
 		if (!(
-			['AIvsH', 'HvsAI', 'HvsH'].indexOf(vstype) !== -1 &&
+			['AIvsH', 'HvsAI', 'HvsH', 'HvsHlocal'].indexOf(vstype) !== -1 &&
 			(name_ === null || typeof name_ === 'string') &&
 			(typeof width === 'number') &&
 			(typeof height === 'number')
@@ -75,6 +75,7 @@ io.on('connection', (client) => {
 			room.toData(),
 		]);
 		client.join(roomID);
+		room.status = 'playing';
 		client.emit('update', {
 			activePlayer: board.activePlayer,
 			height: board.height,

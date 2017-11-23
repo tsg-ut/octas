@@ -15,4 +15,13 @@ html
                         .main-menu-inner
                                 h1 octas
                                 .option-form
-                                        button#startgame はじめる
+                                        div
+                                                input(type="radio", name="vstype" value="HvsAI", checked)
+                                                | 人間 vs AI（人間先攻）
+                                        div
+                                                input(type="radio", name="vstype" value="AIvsH")
+                                                | AI vs 人間（AI先攻）
+                                        div
+                                                input(type="radio", name="vstype" value="HvsHlocal")
+                                                | 人間 vs 人間
+                                button#startgame はじめる
