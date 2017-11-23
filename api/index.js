@@ -25,7 +25,7 @@ io.on('connection', (client) => {
 		]);
 	});
 
-	client.on('create-room', (reqID, {vstype, name: name_ = null, width = 9, height = 9}) => {
+	client.on('create-room', (reqID, {vstype, name: name_ = null, width = 5, height = 5}) => {
 		if (!(
 			['AIvsH', 'HvsAI', 'HvsH', 'HvsHlocal'].indexOf(vstype) !== -1 &&
 			(name_ === null || typeof name_ === 'string') &&
