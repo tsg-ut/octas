@@ -5,51 +5,70 @@ const socketIO = require('socket.io');
 const path = require('path');
 
 const Board = require('../lib/Board');
+const Room = require('./Room');
 
 const app = express();
 const server = new http.Server(app);
 const io = socketIO(server);
 
-let board = null;
-let timer = null;
-const [humanID/* , aiID */] = [0, 1];
-const observerID = 2;
+let nextRoomNumber = 1;
+const rooms = {};
 
-const gameEnd = () => {
-	board = null;
-	if (timer !== null) {
-		clearTimeout(timer);
-		timer = null;
-	}
-};
-
-const onmove = (data) => {
-	const {direction, player} = data;
-	if (board.activePlayer !== player) {
-		return;
-	}
-	board.moveTo(direction);
-	io.emit('move', {direction, player});
-};
-
-const ondisconnect = () => {
-	console.log('Player disconnected');
-	gameEnd();
-};
+// const [humanID/* , aiID */] = [0, 1];
+// const observerID = 2;
 
 io.on('connection', (client) => {
-	let index = null;
-	if (board === null) {
-		board = new Board({height: 9, width: 9});
+	client.on('get-rooms', (reqID) => {
+		client.emit([
+			reqID,
+			Object.keys(rooms).map((key) => rooms[key].toData()),
+		]);
+	});
+
+	client.on('create-room', (reqID, {vstype, name: name_ = null, width = 9, height = 9}) => {
+		if (!(
+			['AIvsH', 'HvsAI', 'HvsH'].indexOf(vstype) !== -1 &&
+			(name_ === null || typeof name_ === 'string') &&
+			(typeof width === 'number') &&
+			(typeof height === 'number')
+		)) {
+			client.emit([
+				reqID,
+				{error: 'invalid data'},
+			]);
+			return;
+		}
+
+		const roomNumber = nextRoomNumber++;
+		const name = (name_ === null) ? `Room #${roomNumber}` : name_;
+		const roomID = `room${roomNumber}`;
+		const board = new Board({height, width});
+		const room = new Room({
+			board,
+			id: roomID,
+			name,
+			status: 'waiting',
+			vstype,
+		});
+		client.on('move', (data) => {
+			const {direction, player} = data;
+			if (board.activePlayer !== player) {
+				return;
+			}
+			board.moveTo(direction);
+			io.emit('move', {direction, player});
+		});
 		board.on('win', (winner) => {
 			console.log(`${winner} won`);
-			client.removeListener('move', onmove);
-			client.removeListener('disconnect', ondisconnect);
-			gameEnd();
+			room.close();
+			delete rooms[room.id];
 		});
-		client.on('move', onmove);
-		client.once('disconnect', ondisconnect);
-		index = humanID;
+		client.once('disconnect', () => {
+			if (roomID in rooms) {
+				rooms[roomID].close();
+				delete rooms[roomID];
+			}
+		});
 		// Reset all clients
 		io.emit('update', {
 			activePlayer: board.activePlayer,
@@ -57,18 +76,25 @@ io.on('connection', (client) => {
 			moves: board.moves,
 			width: board.width,
 		});
-	} else {
-		index = observerID;
-		client.emit('update', {
-			activePlayer: board.activePlayer,
-			height: board.height,
-			moves: board.moves,
-			width: board.width,
-		});
-	}
-	client.emit('login', {
-		id: index,
+		rooms[roomID] = room;
+		client.emit([
+			reqID,
+			room.toData(),
+		]);
+		client.join(roomID);
 	});
+	//  else {
+	// 	index = observerID;
+	// 	client.emit('update', {
+	// 		activePlayer: board.activePlayer,
+	// 		height: board.height,
+	// 		moves: board.moves,
+	// 		width: board.width,
+	// 	});
+	// }
+	// client.emit('login', {
+	// 	id: index,
+	// });
 });
 
 if (process.env.NODE_ENV !== 'production') {
