@@ -19,7 +19,7 @@ const rooms = {};
 
 io.on('connection', (client) => {
 	client.on('get-rooms', (reqID) => {
-		client.emit([
+		client.emit('response', [
 			reqID,
 			Object.keys(rooms).map((key) => rooms[key].toData()),
 		]);
@@ -32,7 +32,7 @@ io.on('connection', (client) => {
 			(typeof width === 'number') &&
 			(typeof height === 'number')
 		)) {
-			client.emit([
+			client.emit('response', [
 				reqID,
 				{error: 'invalid data'},
 			]);
@@ -52,14 +52,14 @@ io.on('connection', (client) => {
 		});
 		client.on('move', (data) => {
 			const {direction, player} = data;
-			if (board.activePlayer !== player) {
+			if (rooms[roomID].board.activePlayer !== player) {
 				return;
 			}
-			board.moveTo(direction);
-			io.emit('move', {direction, player});
+			rooms[roomID].board.moveTo(direction);
+			io.of(roomID).emit('move', {direction, player});
 		});
 		board.on('win', (winner) => {
-			console.log(`${winner} won`);
+			console.log(`${winner} won in ${roomID}`);
 			room.close();
 			delete rooms[room.id];
 		});
@@ -69,19 +69,18 @@ io.on('connection', (client) => {
 				delete rooms[roomID];
 			}
 		});
-		// Reset all clients
-		io.emit('update', {
+		rooms[roomID] = room;
+		client.emit('response', [
+			reqID,
+			room.toData(),
+		]);
+		client.join(roomID);
+		client.emit('update', {
 			activePlayer: board.activePlayer,
 			height: board.height,
 			moves: board.moves,
 			width: board.width,
 		});
-		rooms[roomID] = room;
-		client.emit([
-			reqID,
-			room.toData(),
-		]);
-		client.join(roomID);
 	});
 	//  else {
 	// 	index = observerID;

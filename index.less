@@ -1,11 +1,11 @@
-html, body, .container {
+html, body, .container, .main-menu {
 	margin: 0;
 	padding: 0;
 	width: 100%;
 	height: 100%;
 }
-.container {
-	position: relative;
+.container, .main-menu {
+	position: fixed;
 }
 @keyframes active-animation-a {
 	from { background-color: #ff6666; fill: #ff3333; }
@@ -118,4 +118,35 @@ svg#board{
 		animation: 1s linear 0s 1 both triangle-fadeout;
 		pointer-events: none;
 	}
+}
+.main-menu {
+	background-color: rgba(255, 255, 255, 0.7);
+	text-align: center;
+}
+.main-menu-inner {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: #fff;
+	border: #006600 3px solid;
+	border-radius: 20px;
+	width: 400px;
+}
+.option-form {
+	margin: 20px 0;
+}
+.main-menu h1 {
+	font-size: 40px;
+}
+.main-menu button {
+	font-size: 35px;
+	line-height: 60px;
+	height: 60px;
+	border: 1px solid #0d0;
+	border-radius: 20px 20px;
+	width: 250px;
+	background-color: #090;
+	color: #fff;
+	cursor: pointer;
 }
