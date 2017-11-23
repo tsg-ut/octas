@@ -59,7 +59,7 @@ io.on('connection', (client) => {
 			io.of(roomID).emit('move', {direction, player});
 		});
 		board.on('win', (winner) => {
-			console.log(`${winner} won in ${roomID}`);
+			console.log(`${winner} won in ${roomID} (vstype=${room.vstype})`);
 			room.close();
 			delete rooms[room.id];
 		});
