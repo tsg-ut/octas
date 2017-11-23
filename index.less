@@ -130,21 +130,22 @@ svg#board{
 	transform: translate(-50%, -50%);
 	background-color: #fff;
 	border: #006600 3px solid;
-	border-radius: 20px;
 	width: 400px;
+	padding: 20px;
 }
 .option-form {
 	margin: 20px 0;
 }
 .main-menu h1 {
 	font-size: 40px;
+	margin: 0;
 }
-.main-menu button {
+.main-menu button, .option-form button {
 	font-size: 35px;
 	line-height: 60px;
 	height: 60px;
 	border: 1px solid #0d0;
-	border-radius: 20px 20px;
+	border-radius: 30px 30px;
 	width: 250px;
 	background-color: #090;
 	color: #fff;
@@ -153,4 +154,26 @@ svg#board{
 		background-color: #cec;
 		cursor: not-allowed;
 	}
+}
+.main-menu .option-form > label {
+	display: block;
+}
+.result-prompt {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: rgba(255, 255, 255, 0.8);
+	text-align: center;
+}
+.result-prompt .win-msg {
+	font-weight: bold;
+	font-size: 25px;
+}
+
+.player-a-text {
+	color: #f00;
+}
+.player-b-text {
+	color: #00f;
 }
