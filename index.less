@@ -15,18 +15,32 @@ html, body, .container, .main-menu {
 	from { background-color: #6666ff; fill: #3333ff; }
 	to   { background-color: #ddddff; fill: #aaaaff; }
 }
+.animation-a() {
+	background: #ff6666;
+	fill: #ff3333;
+	body:not(.no-anim) & {
+		animation: 3s linear 0s infinite alternate active-animation-a;
+	}
+}
+.animation-b() {
+	background-color: #6666ff;
+	fill: #3333ff;
+	body:not(.no-anim) & {
+		animation: 3s linear 0s infinite alternate active-animation-b;
+	}
+}
 .board-end {
 	height: 50%;
 	&.player-a {
 		background-color: #ffeeee;
 		.active-a & {
-			animation: 3s linear 0s infinite alternate active-animation-a;
+			.animation-a;
 		}
 	}
 	&.player-b {
 		background-color: #eeeeff;
 		.active-b & {
-			animation: 3s linear 0s infinite alternate active-animation-b;
+			.animation-b;
 		}
 	}
 }
@@ -51,14 +65,14 @@ svg#board{
 			stroke: #ff0000;
 			fill: #ff6666;
 			.active-a & {
-				animation: 3s linear 0s infinite alternate active-animation-a;
+				.animation-a;
 			}
 		}
 		&.player-b {
 			stroke: #0000ff;
 			fill: #6666ff;
 			.active-b & {
-				animation: 3s linear 0s infinite alternate active-animation-b;
+				.animation-b;
 			}
 		}
 	}
