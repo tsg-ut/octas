@@ -1,0 +1,31 @@
+doctype html
+html
+    head
+        title OCTAS
+        link(rel="stylesheet" href="/index.css")
+        
+        script(src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous")
+        script(src="/index.js")
+
+    body
+        include partials/header
+        
+        .container
+            .link
+                a(href="/index-local") ローカルプレイ
+            .need-signin.hide
+                h3 オンラインプレイにはログインが必要です。
+                .link
+                    a(class="signin btn btn-block btn-social btn-twitter")
+                        span(class="fa fa-twitter")
+                        | Sign in with Twitter
+            .lobby.hide
+                h3
+                    | hello, 
+                    .username
+                    | !
+            .connecting 接続中...
+            
+            
+        

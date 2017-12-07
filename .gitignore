@@ -44,3 +44,6 @@ jspm_packages
 *.html
 *.css
 *.map
+
+# secret env
+.env

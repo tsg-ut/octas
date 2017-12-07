@@ -1,193 +1,83 @@
-html, body, .container, .main-menu {
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 100%;
-}
-.container, .main-menu {
-	position: fixed;
-}
-@keyframes active-animation-a {
-	from { background-color: #ff6666; fill: #ff3333; }
-	to   { background-color: #ffdddd; fill: #ffaaaa; }
-}
-@keyframes active-animation-b {
-	from { background-color: #6666ff; fill: #3333ff; }
-	to   { background-color: #ddddff; fill: #aaaaff; }
-}
-.animation-a() {
-	background: #ff6666;
-	fill: #ff3333;
-	body:not(.no-anim) & {
-		animation: 3s linear 0s infinite alternate active-animation-a;
-	}
-}
-.animation-b() {
-	background-color: #6666ff;
-	fill: #3333ff;
-	body:not(.no-anim) & {
-		animation: 3s linear 0s infinite alternate active-animation-b;
-	}
-}
-.board-end {
-	height: 50%;
-	&.player-a {
-		background-color: #ffeeee;
-		.active-a & {
-			.animation-a;
-		}
-	}
-	&.player-b {
-		background-color: #eeeeff;
-		.active-b & {
-			.animation-b;
-		}
-	}
-}
-svg#board{
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	width: 100%;
-	height: 100%;
-	.board-edge {
-		stroke: #009900;
-		fill: #ffffff;
-		stroke-width: 6;
-	}
-	.board-point {
-		fill: #006600;
-		stroke: none;
-	}
-	.board-goal {
-		stroke-width: 2;
-		&.player-a {
-			stroke: #ff0000;
-			fill: #ff6666;
-			.active-a & {
-				.animation-a;
-			}
-		}
-		&.player-b {
-			stroke: #0000ff;
-			fill: #6666ff;
-			.active-b & {
-				.animation-b;
-			}
-		}
-	}
-	.current-point {
-		fill: #ee77ee;
-		cursor: grab;
-		.inactive & {
-			cursor: not-allowed;
-		}
-	}
-	.trace-line {
-		fill: none;
-		stroke: #000000;
-		stroke-width: 1.5;
-	}
-	.arrow {
-		stroke-width: 1;
-		cursor: pointer;
-		.active-a & {
-			fill: #ff4444;
-			stroke: #d10000;
-		}
-		.active-b & {
-			fill: #4444ff;
-			stroke: #0000d1;
-		}
-		.inactive & {
-			cursor: not-allowed;
-		}
-	}
-	&.dragging {
-		.arrow {
-			pointer-events: none;
-			opacity: 0.4;
-			&.selected {
-				opacity: 1;
-				.active-a & {
-					stroke: #b30000;
-				}
-				.active-b & {
-					stroke: #0000b3;
-				}
-			}
-		}
-		.current-point {
-			cursor: grabbing;
-		}
-	}
-	@keyframes triangle-fadeout {
-		from { opacity: 0.8; }
-		to   { opacity: 0;   }
-	}
-	.triangle {
-		fill: #00ff00;
-		stroke: #006600;
-		stroke-width: 1;
-		animation: 1s linear 0s 1 both triangle-fadeout;
-		pointer-events: none;
-	}
-}
-.main-menu {
-	background-color: rgba(255, 255, 255, 0.7);
-	text-align: center;
-}
-.main-menu-inner {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	background-color: #fff;
-	border: #006600 3px solid;
-	width: 400px;
-	padding: 20px;
-}
-.option-form {
-	margin: 20px 0;
-}
-.main-menu h1 {
-	font-size: 40px;
-	margin: 0;
-}
-.main-menu button, .option-form button {
-	font-size: 35px;
-	line-height: 60px;
-	height: 60px;
-	border: 1px solid #0d0;
-	border-radius: 30px 30px;
-	width: 250px;
-	background-color: #090;
-	color: #fff;
-	cursor: pointer;
-	&:disabled {
-		background-color: #cec;
-		cursor: not-allowed;
-	}
-}
-.main-menu .option-form > label {
-	display: block;
-}
-.result-prompt {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	background-color: rgba(255, 255, 255, 0.8);
-	text-align: center;
-}
-.result-prompt .win-msg {
-	font-weight: bold;
-	font-size: 25px;
+@import "lib/themes/default/variables";
+@import "lib/bootstrap/bootstrap";
+@import "lib/font-awesome/css/font-awesome.min.css";
+
+@import "lib/themes/default/default";
+
+// Scaffolding
+// -------------------------
+
+html {
+  position: relative;
+  min-height: 100%;
 }
 
-.player-a-text {
-	color: #f00;
+body {
+  padding-top: 60px;
+  margin-bottom: 75px;
 }
-.player-b-text {
-	color: #00f;
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 45px;
+  line-height: 45px;
+
+  p, ul {
+    margin-bottom: 0;
+  }
+}
+
+// Input Fields
+// -------------------------
+
+textarea {
+  resize: vertical;
+}
+
+// Navbar
+// -------------------------
+
+.navbar-nav img {
+  width: 30px;
+  height: 30px;
+  margin: -15px 15px -15px;
+}
+
+// Alerts
+// -------------------------
+
+.alert {
+  margin-top: 20px;
+}
+
+// Thumbnails
+// -------------------------
+
+.thumbnail {
+  padding: 0;
+  border-radius: 0;
+  box-shadow: 0 0 5px #ccc, inset 0 0 0 #000;
+}
+
+// Font Icons
+// -------------------------
+
+.fa {
+  margin-right: 6px;
+}
+
+
+.link {
+    margin: 10px 10px;
+}
+.username {
+    display: inline;
+}
+.signin {
+    width: 20em;
+}
+.hide {
+    display: none;
 }

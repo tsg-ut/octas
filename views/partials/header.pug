@@ -1,0 +1,19 @@
+.navbar.navbar-default.navbar-fixed-top
+  .container
+    .navbar-header
+      button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      a.navbar-brand(href='/')
+        i.fa.fa-cube
+        | OCTAS
+    .collapse.navbar-collapse
+      ul.nav.navbar-nav
+        li(class=(title === 'OCTAS') ? 'active' : undefined)
+          a(href='/') Home
+        li(class=(title === 'Local Play') ? 'active' : undefined)
+          a(href='/index-local') Local Play
+        li(class=(title === 'My Page') ? 'active' : undefined)
+          a(href='/mypage') My Page

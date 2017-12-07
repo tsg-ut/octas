@@ -4,11 +4,14 @@
   "description": "一筆書きゲーム",
   "main": "index.js",
   "scripts": {
-    "browserify": "concurrently \"npm run browserify:index\" \"npm run browserify:worker\"",
+    "browserify": "concurrently \"npm run browserify:index\" \"npm run browserify:local\" \"npm run browserify:worker\"",
     "browserify:index": "browserify lib/index.js --debug --transform [ babelify --presets [ env ] --plugins transform-inline-environment-variables ] | exorcist index.js.map > index.js",
+    "browserify:local": "browserify lib/index-local.js --debug --transform [ babelify --presets [ env ] --plugins transform-inline-environment-variables ] | exorcist index-local.js.map > index-local.js",
     "browserify:worker": "browserify lib/worker.js --debug --transform [ babelify --presets [ env ] --plugins transform-inline-environment-variables ] | exorcist worker.js.map > worker.js",
-    "pug": "pug index.pug",
-    "less": "lessc index.less | postcss --use autoprefixer -o index.css",
+    "less": "concurrently \"npm run less:index\" \"npm run less:local\"",
+    "less:index": "lessc index.less | postcss --use autoprefixer -o index.css",
+    "less:local": "lessc index-local.less | postcss --use autoprefixer -o index-local.css",
+    "pug": "concurrently \"pug views/index.pug -o .\" \"pug views/index-local.pug -o .\"",
     "build": "concurrently \"npm run browserify\" \"npm run pug\" \"npm run less\"",
     "build:production": "cross-env NODE_ENV=production npm run build",
     "lint": "eslint \"lib/**/*.js\" \"api/**/*.js\"",
@@ -44,7 +47,12 @@
     "snapsvg": "^0.5.1"
   },
   "dependencies": {
+    "dotenv": "^4.0.0",
     "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "mongodb": "^2.2.33",
+    "passport": "^0.4.0",
+    "passport-twitter": "^1.0.4",
     "socket.io": "^2.0.3"
   }
 }
