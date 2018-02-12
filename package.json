@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/tsg-ut/octas#readme",
   "devDependencies": {
-    "autoprefixer": "^7.0.0",
+    "autoprefixer": "^8.0.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.3.0",
