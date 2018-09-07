@@ -31,7 +31,7 @@
     "babel-eslint": "^8.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.0",
     "babel-preset-env": "^1.6.1",
-    "babelify": "^8.0.0",
+    "babelify": "^10.0.0",
     "browserify": "^16.0.0",
     "concurrently": "^3.4.0",
     "cross-env": "^5.1.1",
