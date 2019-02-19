@@ -1,0 +1,50 @@
+{
+  "name": "octas",
+  "version": "1.0.0",
+  "description": "一筆書きゲーム",
+  "main": "index.js",
+  "scripts": {
+    "browserify": "concurrently \"npm run browserify:index\" \"npm run browserify:worker\"",
+    "browserify:index": "browserify lib/index.js --debug --transform [ babelify --presets [ env ] --plugins transform-inline-environment-variables ] | exorcist index.js.map > index.js",
+    "browserify:worker": "browserify lib/worker.js --debug --transform [ babelify --presets [ env ] --plugins transform-inline-environment-variables ] | exorcist worker.js.map > worker.js",
+    "pug": "pug index.pug",
+    "less": "lessc index.less | postcss --use autoprefixer -o index.css",
+    "build": "concurrently \"npm run browserify\" \"npm run pug\" \"npm run less\"",
+    "build:production": "cross-env NODE_ENV=production npm run build",
+    "lint": "eslint \"lib/**/*.js\" \"api/**/*.js\"",
+    "test": "npm run lint",
+    "start": "cd api && node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tsg-ut/octas.git"
+  },
+  "author": "東京大学理論科学グループ(Theoretical Science Group)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tsg-ut/octas/issues"
+  },
+  "homepage": "https://github.com/tsg-ut/octas#readme",
+  "devDependencies": {
+    "autoprefixer": "^9.0.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.0",
+    "babel-preset-env": "^1.6.1",
+    "babelify": "^8.0.0",
+    "browserify": "^16.0.0",
+    "concurrently": "^4.0.0",
+    "cross-env": "^5.1.1",
+    "eslint": "^5.14.1",
+    "exorcist": "^1.0.0",
+    "jquery": "^3.1.0",
+    "less": "^3.0.0",
+    "postcss-cli": "^6.0.0",
+    "pug-cli": "^1.0.0-alpha6",
+    "snapsvg": "^0.5.1"
+  },
+  "dependencies": {
+    "express": "^4.16.2",
+    "socket.io": "^2.0.3"
+  }
+}

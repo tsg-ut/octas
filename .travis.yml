@@ -1,0 +1,23 @@
+language: node_js
+
+node_js:
+  - "node"
+
+script:
+  - npm run build:production
+  - npm test
+
+before_deploy:
+  - bash bin/before_deploy.sh
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  on:
+    branch: master
+
+branches:
+  except:
+    - /^v\d+\.\d+\.\d+$/
+    - gh-pages
