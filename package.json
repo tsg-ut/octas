@@ -34,7 +34,7 @@
     "babelify": "^8.0.0",
     "browserify": "^16.0.0",
     "concurrently": "^4.0.0",
-    "cross-env": "^5.1.1",
+    "cross-env": "^6.0.0",
     "eslint": "^5.14.1",
     "exorcist": "^1.0.0",
     "jquery": "^3.1.0",
